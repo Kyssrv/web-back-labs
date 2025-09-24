@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request
+from flask import Flask, url_for, request, redirect
 import datatime
 
 app = Flask(__name__)
@@ -73,7 +73,9 @@ def counter():
     </body>
 </html>
 '''
-
+@app.route("/into")
+def info():
+    return redirect("/author")
 
 if __name__ == "__main__":
     app.run(debug=True)
