@@ -88,7 +88,10 @@ def created():
     </body>
 </html>
 '''
-
+app = Flask(name)
+@app.errorhandler(404)
+def not_found(err):
+    return "нет такой страницы",404
 
 if __name__ == "__main__":
     app.run(debug=True)
