@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Изображение{% endblock %}
+
+{% block header %}Страница с изображением{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='lab1.css') }}">
+<img src="{{ url_for('static', filename='image.jpg') }}" alt="Пример изображения">
+<br>
+<a href="{{ url_for('lab1') }}">Назад к лабораторной 1</a>
+{% endblock %}
