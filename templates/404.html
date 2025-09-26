@@ -9,7 +9,37 @@
 <div style="text-align: center;">
     <img src="{{ url_for('static', filename='404.jpg') }}" alt="404 ошибка" style="width: 400px; height: 300px;">
     <h2>Упс! Страница, которую вы ищете, не существует.</h2>
-    <p>Возможно, она была перемещена или удалена.</p>
-    <a href="{{ url_for('index') }}">Вернуться на главную страницу</a>
+    
+    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+        <p><strong>Информация о запросе:</strong></p>
+        <p>IP-адрес пользователя: {{ user_ip }}</p>
+        <p>Дата и время доступа: {{ access_time.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        <p>Запрошенный адрес: {{ requested_url }}</p>
+    </div>
+    
+    <a href="{{ url_for('index') }}" style="display: inline-block; padding: 10px 20px; background-color: #2E8B57; color: white; text-decoration: none; border-radius: 5px; margin-bottom: 20px;">
+        Вернуться на главную страницу
+    </a>
+</div>
+
+<div style="margin-top: 30px;">
+    <h3 style="color: #2E8B57; border-bottom: 2px solid #2E8B57; padding-bottom: 10px;">Журнал посещений:</h3>
+    
+    {% if access_log %}
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; max-height: 400px; overflow-y: auto;">
+            {% for entry in access_log|reverse %}
+            <div style="background-color: white; padding: 10px; margin: 5px 0; border-left: 4px solid #2E8B57; border-radius: 3px;">
+                <span style="color: #666; font-size: 0.9em;">
+                    [{{ entry.time.strftime('%Y-%m-%d %H:%M:%S') }}, пользователь {{ entry.ip }}] 
+                </span>
+                <span style="color: #333;">
+                    зашёл на адрес: {{ entry.url }}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: #666; font-style: italic;">Журнал посещений пуст</p>
+    {% endif %}
 </div>
 {% endblock %}
