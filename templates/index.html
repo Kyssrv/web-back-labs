@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}НГТУ, ФБ, Лабораторные работы{% endblock %}
+
+{% block header %}НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных{% endblock %}
+
+{% block content %}
+<nav>
+    <ul>
+        <li><a href="{{ url_for('lab1') }}">Первая лабораторная</a></li>
+    </ul>
+</nav>
+{% endblock %}
