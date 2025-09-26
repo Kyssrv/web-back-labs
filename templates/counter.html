@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Счётчик{% endblock %}
+
+{% block header %}Счётчик посещений{% endblock %}
+
+{% block content %}
+<p>Количество посещений: {{ counter }}</p>
+<a href="{{ url_for('clear_counter') }}">Очистить счётчик</a>
+<br>
+<a href="{{ url_for('lab1') }}">Назад к лабораторной 1</a>
+{% endblock %}
