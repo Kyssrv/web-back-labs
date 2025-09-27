@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, abort, make_response
+from flask import Flask, render_template, request, redirect, url_for, abort, make_response, abort
 from datetime import datetime
 import random
 
@@ -154,6 +154,17 @@ def a():
 @app.route ('/lab2/a/')
 def a():
     return 'со слэшем'
+
+flower_list=('роза','тюльпан','незабудка','ромашка')
+
+@lab2.route('/lab2/flowers/<int:flower_id>')
+def flowers(flower_id):
+    if flower_id > len(flower_list):
+        abort (404)
+    else:
+        return "цветок=" + flower_list[flower_id]
+
+
 
 if name == '__main__':
     app.run(debug=False)
