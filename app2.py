@@ -122,5 +122,9 @@ def teapot(error):
 def internal_server_error(error):
     return render_template('500.html'), 500
 
+@app.route('/lab2/example')
+def example():
+    return render_template('example.html')
+
 if name == '__main__':
     app.run(debug=False)  # debug=False для тестирования ошибки 500
