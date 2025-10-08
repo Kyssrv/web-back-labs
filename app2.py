@@ -126,5 +126,10 @@ def internal_server_error(error):
 def example():
     return render_template('example.html')
 
+@app.route ('/lab2/example')
+def example():
+    name= 'София Кучерова'
+    return render_template ('example.html', name= name)
+
 if name == '__main__':
     app.run(debug=False)  # debug=False для тестирования ошибки 500
