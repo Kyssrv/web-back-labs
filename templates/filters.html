@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{# номер лабораторной работы: #}
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{# основной контент: #}
+{% block main %}
+    <h1>Фильтры в Jinja2</h1>
+
+    <h2>Исходная фраза с тегами:</h2>
+    <div>Фраза: {{ phrase }}</div>
+
+    <h2>Фильтр title (слова с заглавной буквы):</h2>
+    <div>Фраза: {{ phrase|title }}</div>
+
+    <h2>Фильтр striptags (удаление HTML-тегов):</h2>
+    <div>Фраза: {{ phrase|striptags }}</div>
+
+    <h2>Фильтр safe (разрешение HTML-тегов):</h2>
+    <div>Фраза: {{ phrase|safe }}</div>
+
+    <h2>Комбинация фильтров striptags + reverse:</h2>
+    <div>Фраза: {{ phrase|striptags|reverse }}</div>
+
+    <h2>Другие полезные фильтры:</h2>
+    <div>Upper: {{ phrase|striptags|upper }}</div>
+    <div>Lower: {{ phrase|striptags|lower }}</div>
+    <div>Capitalize: {{ phrase|striptags|capitalize }}</div>
+    <div>Length: {{ phrase|striptags|length }} символов</div>
+    <div>Wordcount: {{ phrase|striptags|wordcount }} слов</div>
+
+    <h2>Комбинация нескольких фильтров (пример из задания):</h2>
+    <div>striptags + replace + upper:</div>
+    <div>{{ phrase|striptags|replace('сколько', 'МНОГО')|replace('нам', 'ТУТ')|upper }}</div>
+{% endblock %}

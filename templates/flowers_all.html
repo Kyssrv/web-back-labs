@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{% block main %}
+    <h1>Все цветы</h1>
+    
+    <p>Общее количество цветов: {{ flowers|length }}</p>
+    
+    {% if flowers %}
+        <ul>
+            {% for flower in flowers %}
+                <li>
+                    <a href="{{ url_for('flower_detail', flower_id=loop.index) }}">
+                        {{ flower }} (ID: {{ loop.index }})
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Цветов пока нет</p>
+    {% endif %}
+    
+    <div>
+        <a href="{{ url_for('clear_flowers') }}">Очистить список цветов</a> |
+        <a href="{{ url_for('lab2') }}">Назад к лабораторной</a>
+    </div>
+{% endblock %}

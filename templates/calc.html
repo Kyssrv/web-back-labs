@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{% block main %}
+    <h1>Калькулятор</h1>
+    
+    <p>Вычисляем операции для чисел: {{ a }} и {{ b }}</p>
+    
+    <table border="1">
+        <tr>
+            <th>Операция</th>
+            <th>Результат</th>
+        </tr>
+        {% for operation, result in operations.items() %}
+        <tr>
+            <td>{{ operation }}</td>
+            <td>{{ result }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+    <div style="margin-top: 20px;">
+        <a href="{{ url_for('calc', a=5, b=3) }}">Пример: 5 и 3</a> |
+        <a href="{{ url_for('calc', a=10, b=2) }}">Пример: 10 и 2</a> |
+        <a href="{{ url_for('lab2') }}">Назад</a>
+    </div>
+{% endblock %}

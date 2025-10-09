@@ -7,9 +7,22 @@
         Кучерова София Владимировна. {% block lab %}{% endblock %}
     </title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    
+    <!-- Favicon ссылки с использованием url_for() -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
 </head>
 <body>
     <header>
+        <nav style="background: #f0f0f0; padding: 10px; margin-bottom: 20px;">
+            <a href="{{ url_for('index') }}">Главная</a> |
+            <a href="{{ url_for('lab1') }}">Лабораторная 1</a> |
+            <a href="{{ url_for('lab2') }}">Лабораторная 2</a>
+        </nav>
         WEB-программирование, часть 2. {{ self.lab() }}
     </header>
 
