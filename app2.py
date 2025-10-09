@@ -57,6 +57,39 @@ def info():
     browser = request.user_agent.browser
     return render_template('info.html', browser=browser)
 
+# Лабораторная 2
+@app.route('/lab2')
+def lab2():
+    return render_template('lab2.html')
+
+# Лабораторная 2 - База данных
+@app.route('/lab2/database')
+def database():
+    return render_template('database.html')
+
+# Лабораторная 2 - Запросы
+@app.route('/lab2/queries')
+def queries():
+    return render_template('queries.html')
+
+# Лабораторная 2 - Результаты
+@app.route('/lab2/results')
+def results():
+    return render_template('results.html')
+
+# Лабораторная 2 - Пример
+@app.route('/lab2/example')
+def example():
+    name = 'София Кучерова'
+    group = 'ФБИ-33'
+    course = '2 курс'
+    lab_number = 'Лабораторная работа 2'
+    return render_template('example.html', 
+                         name=name, 
+                         group=group, 
+                         course=course, 
+                         lab_number=lab_number)
+
 # Страницы с кодами ошибок
 @app.route('/400')
 def error_400():
@@ -124,12 +157,38 @@ def internal_server_error(error):
 
 @app.route('/lab2/example')
 def example():
-    return render_template('example.html')
-
-@app.route ('/lab2/example')
-def example():
-    name= 'София Кучерова'
-    return render_template ('example.html', name= name)
-
+    name = 'София Кучерова'
+    group = 'ФБИ-33'
+    course = '3 курс'
+    lab_num = 2
+    
+    # Список фруктов с ценами
+    fruits = [
+        {'name': 'яблоки', 'price': 100},
+        {'name': 'груши', 'price': 120},
+        {'name': 'апельсины', 'price': 80},
+        {'name': 'мандарины', 'price': 95},
+        {'name': 'манго', 'price': 321}
+    ]
+    
+    # Список книг для дополнительного примера
+    books = [
+        {'author': 'Фёдор Достоевский', 'title': 'Преступление и наказание', 'genre': 'Роман', 'pages': 671},
+        {'author': 'Антон Чехов', 'title': 'Рассказы', 'genre': 'Проза', 'pages': 320},
+        {'author': 'Александр Пушкин', 'title': 'Евгений Онегин', 'genre': 'Роман в стихах', 'pages': 240},
+        {'author': 'Лев Толстой', 'title': 'Война и мир', 'genre': 'Роман-эпопея', 'pages': 1225},
+        {'author': 'Михаил Булгаков', 'title': 'Мастер и Маргарита', 'genre': 'Роман', 'pages': 480},
+        {'author': 'Николай Гоголь', 'title': 'Мёртвые души', 'genre': 'Поэма', 'pages': 352},
+        {'author': 'Иван Тургенев', 'title': 'Отцы и дети', 'genre': 'Роман', 'pages': 288},
+        {'author': 'Александр Грибоедов', 'title': 'Горе от ума', 'genre': 'Комедия', 'pages': 160}
+    ]
+    
+    return render_template('example.html', 
+                         name=name, 
+                         group=group, 
+                         course=course, 
+                         lab_num=lab_num,
+                         fruits=fruits,
+                         books=books)
 if name == '__main__':
     app.run(debug=False)  # debug=False для тестирования ошибки 500
