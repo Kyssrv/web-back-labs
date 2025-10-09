@@ -204,5 +204,155 @@ def lab2():
     
     return render_template('lab2.html', fruits=fruits)
 
+# Лабораторная 2 - Фильтры
+@app.route('/lab2/filters')
+def filters():
+    phrase = "О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных..."
+    return render_template('filters.html', phrase=phrase)
+
+# Улучшенная работа с цветами
+flowers_list = []
+
+@app.route('/lab2/add_flower/')
+def add_flower_no_name():
+    abort(400, description="Вы не задали имя цветка")
+
+@app.route('/lab2/flowers/')
+def all_flowers():
+    return render_template('flowers_all.html', flowers=flowers_list)
+
+@app.route('/lab2/flowers/<int:flower_id>')
+def flower_detail(flower_id):
+    if flower_id < 1 or flower_id > len(flowers_list):
+        abort(404)
+    flower = flowers_list[flower_id - 1]
+    return render_template('flower_detail.html', flower=flower, flower_id=flower_id)
+
+@app.route('/lab2/flowers/clear')
+def clear_flowers():
+    flowers_list.clear()
+    return redirect(url_for('all_flowers'))
+
+@app.route('/lab2/add_flower/<flower_name>')
+def add_flower(flower_name):
+    flowers_list.append(flower_name)
+    return f"Цветок {flower_name} добавлен! Всего цветов: {len(flowers_list)}"
+
+# Калькулятор
+@app.route('/lab2/calc/')
+def calc_default():
+    return redirect(url_for('calc', a=1, b=1))
+
+@app.route('/lab2/calc/<int:a>')
+def calc_single(a):
+    return redirect(url_for('calc', a=a, b=1))
+
+@app.route('/lab2/calc/<int:a>/<int:b>')
+def calc(a, b):
+    operations = {
+        'Сложение': a + b,
+        'Вычитание': a - b,
+        'Умножение': a * b,
+        'Деление': a / b if b != 0 else 'Ошибка: деление на ноль',
+        'Возведение в степень': a ** b
+    }
+    return render_template('calc.html', a=a, b=b, operations=operations)
+
+# Список книг
+@app.route('/lab2/books')
+def books():
+    books = [
+        {'author': 'Фёдор Достоевский', 'title': 'Преступление и наказание', 'genre': 'Роман', 'pages': 671},
+        {'author': 'Лев Толстой', 'title': 'Война и мир', 'genre': 'Роман-эпопея', 'pages': 1225},
+        {'author': 'Антон Чехов', 'title': 'Рассказы', 'genre': 'Проза', 'pages': 320},
+        {'author': 'Александр Пушкин', 'title': 'Евгений Онегин', 'genre': 'Роман в стихах', 'pages': 240},
+        {'author': 'Михаил Булгаков', 'title': 'Мастер и Маргарита', 'genre': 'Роман', 'pages': 480},
+        {'author': 'Николай Гоголь', 'title': 'Мёртвые души', 'genre': 'Поэма', 'pages': 352},
+        {'author': 'Иван Тургенев', 'title': 'Отцы и дети', 'genre': 'Роман', 'pages': 288},
+        {'author': 'Александр Грибоедов', 'title': 'Горе от ума', 'genre': 'Комедия', 'pages': 160},
+        {'author': 'Михаил Лермонтов', 'title': 'Герой нашего времени', 'genre': 'Роман', 'pages': 224},
+        {'author': 'Иван Гончаров', 'title': 'Обломов', 'genre': 'Роман', 'pages': 400}
+    ]
+    return render_template('books.html', books=books)
+
+
+# Список ягод
+@app.route('/lab2/berries')
+def berries():
+    berries_list = [
+        {'name': 'Клубника', 'image': 'strawberry.jpg', 'description': 'Сладкая красная ягода, богатая витамином C'},
+        {'name': 'Малина', 'image': 'raspberry.jpg', 'description': 'Ароматная ягода, часто используется в десертах'},
+        {'name': 'Черника', 'image': 'blueberry.jpg', 'description': 'Маленькая синяя ягода, полезна для зрения'},
+        {'name': 'Ежевика', 'image': 'blackberry.jpg', 'description': 'Тёмная ягода с насыщенным вкусом'},
+        {'name': 'Смородина', 'image': 'currant.jpg', 'description': 'Бывает красная, черная и белая, богата витаминами'},
+        {'name': 'Крыжовник', 'image': 'gooseberry.jpg', 'description': 'Зелёная ягода с кисло-сладким вкусом'},
+        {'name': 'Вишня', 'image': 'cherry.jpg', 'description': 'Красная косточковая ягода'},
+        {'name': 'Черешня', 'image': 'sweet_cherry.jpg', 'description': 'Сладкий вариант вишни'},
+        {'name': 'Облепиха', 'image': 'sea_buckthorn.jpg', 'description': 'Оранжевая ягода, очень полезная для здоровья'},
+        {'name': 'Брусника', 'image': 'lingonberry.jpg', 'description': 'Красная ягода с горьковатым вкусом'},
+        {'name': 'Клюква', 'image': 'cranberry.jpg', 'description': 'Кислая красная ягода, растёт на болотах'},
+        {'name': 'Голубика', 'image': 'bilberry.jpg', 'description': 'Похожа на чернику, но крупнее'},
+        {'name': 'Шиповник', 'image': 'rosehip.jpg', 'description': 'Плоды розы, богаты витамином C'},
+        {'name': 'Рябина', 'image': 'rowan.jpg', 'description': 'Красные ягоды, становятся сладкими после заморозков'},
+        {'name': 'Калина', 'image': 'viburnum.jpg', 'description': 'Красные ягоды с горьким вкусом'},
+        {'name': 'Боярышник', 'image': 'hawthorn.jpg', 'description': 'Красные ягоды, полезные для сердца'},
+        {'name': 'Ирга', 'image': 'serviceberry.jpg', 'description': 'Синие сладкие ягоды'},
+        {'name': 'Арония', 'image': 'chokeberry.jpg', 'description': 'Чёрные ягоды с терпким вкусом'},
+        {'name': 'Жимолость', 'image': 'honeysuckle.jpg', 'description': 'Синие продолговатые ягоды'},
+        {'name': 'Физалис', 'image': 'physalis.jpg', 'description': 'Ягода в бумажной оболочке'}
+    ]
+    return render_template('berries.html', berries=berries_list)
+
+# Улучшенная работа с цветами
+flowers_list = [
+    {'name': 'роза', 'price': 300},
+    {'name': 'тюльпан', 'price': 310},
+    {'name': 'незабудка', 'price': 320},
+    {'name': 'ромашка', 'price': 330},
+    {'name': 'георгин', 'price': 300},
+    {'name': 'гладиолус', 'price': 310}
+]
+
+@app.route('/lab2/add_flower/')
+def add_flower_no_name():
+    abort(400, description="Вы не задали имя цветка")
+
+@app.route('/lab2/flowers/')
+def all_flowers():
+    return render_template('flowers_all.html', flowers=flowers_list)
+
+@app.route('/lab2/flowers/<int:flower_id>')
+def flower_detail(flower_id):
+    if flower_id < 1 or flower_id > len(flowers_list):
+        abort(404)
+    flower = flowers_list[flower_id - 1]
+    return render_template('flower_detail.html', flower=flower, flower_id=flower_id)
+
+@app.route('/lab2/del_flower/<int:flower_id>')
+def delete_flower(flower_id):
+    if flower_id < 1 or flower_id > len(flowers_list):
+        abort(404)
+    deleted_flower = flowers_list.pop(flower_id - 1)
+    return redirect(url_for('all_flowers'))
+
+@app.route('/lab2/flowers/clear')
+def clear_flowers():
+    flowers_list.clear()
+    return redirect(url_for('all_flowers'))
+
+@app.route('/lab2/add_flower/<flower_name>')
+def add_flower(flower_name):
+    # Добавляем цветок со стандартной ценой
+    flowers_list.append({'name': flower_name, 'price': 300})
+    return redirect(url_for('all_flowers'))
+
+# Новый обработчик для добавления цветка через форму
+@app.route('/lab2/add_flower_form', methods=['POST'])
+def add_flower_form():
+    flower_name = request.form.get('flower_name')
+    if flower_name:
+        flowers_list.append({'name': flower_name, 'price': 300})
+    return redirect(url_for('all_flowers'))
+
 if name == '__main__':
     app.run(debug=False)  # debug=False для тестирования ошибки 500

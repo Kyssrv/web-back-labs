@@ -6,8 +6,15 @@
     <h1>Информация о цветке</h1>
     
     <div class="flower-info">
-        <h2>{{ flower }}</h2>
-        <p>ID: {{ flower_id }}</p>
+        <h2>{{ flower.name }}</h2>
+        <p><strong>Цена:</strong> {{ flower.price }} руб</p>
+        <p><strong>ID:</strong> {{ flower_id }}</p>
+    </div>
+    
+    <div style="margin: 20px 0;">
+        <a href="{{ url_for('delete_flower', flower_id=flower_id) }}" style="color: red;">
+            Удалить этот цветок
+        </a>
     </div>
     
     <div>

@@ -1,7 +1,20 @@
 {% extends "base.html" %}
 
-{# номер лабораторной работы: #}
 {% block lab %}Лабораторная работа 2{% endblock %}
+
+{% block main %}
+    <h1>Лабораторная работа 2</h1>
+    
+    <h2>Содержание:</h2>
+    <ul>
+        <li><a href="{{ url_for('example') }}">Примеры вычислений и списков</a></li>
+        <li><a href="{{ url_for('filters') }}">Демонстрация фильтров</a></li>
+        <li><a href="{{ url_for('books') }}">Каталог книг</a></li>
+        <li><a href="{{ url_for('berries') }}">Каталог ягод</a></li>
+        <li><a href="{{ url_for('calc_default') }}">Калькулятор</a></li>
+        <li><a href="{{ url_for('all_flowers') }}">Работа с цветами (обновленная)</a></li>
+    </ul>
+
 
 {# основной контент: #}
 {% block main %}
@@ -21,4 +34,16 @@
         <li>{{ loop.index }} - {{ f.name }}: {{ f.price }} &#8381;</li>
         {% endfor %}
     </ul>
+
+    
+{% endblock %}
+
+{% block main %}
+    <!-- существующий контент... -->
+    
+    <h2>Дополнительные примеры</h2>
+    <ul>
+        <li><a href="{{ url_for('filters') }}">Демонстрация фильтров Jinja2</a></li>
+    </ul>
+
 {% endblock %}
