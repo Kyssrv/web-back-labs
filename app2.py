@@ -190,5 +190,19 @@ def example():
                          lab_num=lab_num,
                          fruits=fruits,
                          books=books)
+
+# Лабораторная 2
+@app.route('/lab2/')
+def lab2():
+    fruits = [
+        {'name': 'яблоки', 'price': 100},
+        {'name': 'груши', 'price': 120},
+        {'name': 'апельсины', 'price': 80},
+        {'name': 'мандарины', 'price': 95},
+        {'name': 'манго', 'price': 321}
+    ]
+    
+    return render_template('lab2.html', fruits=fruits)
+
 if name == '__main__':
     app.run(debug=False)  # debug=False для тестирования ошибки 500
