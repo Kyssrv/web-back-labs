@@ -1,6 +1,35 @@
+
 from flask import Blueprint, render_template, request, make_response, redirect, url_for
 
 lab3 = Blueprint('lab3', __name__)
+
+# Список товаров
+PRODUCTS = [
+    {"name": "iPhone 14", "price": 79990, "brand": "Apple", "color": "Черный", "weight": 172, "category": "Смартфон"},
+    {"name": "Samsung Galaxy S23", "price": 69990, "brand": "Samsung", "color": "Белый", "weight": 168, "category": "Смартфон"},
+    {"name": "Xiaomi Redmi Note 12", "price": 24990, "brand": "Xiaomi", "color": "Синий", "weight": 183, "category": "Смартфон"},
+    {"name": "MacBook Air M2", "price": 129990, "brand": "Apple", "color": "Серебристый", "weight": 1240, "category": "Ноутбук"},
+    {"name": "Asus ROG Strix", "price": 159990, "brand": "Asus", "color": "Черный", "weight": 2500, "category": "Ноутбук"},
+    {"name": "Lenovo IdeaPad", "price": 45990, "brand": "Lenovo", "color": "Серый", "weight": 1600, "category": "Ноутбук"},
+    {"name": "iPad Air", "price": 59990, "brand": "Apple", "color": "Розовый", "weight": 461, "category": "Планшет"},
+    {"name": "Samsung Tab S8", "price": 54990, "brand": "Samsung", "color": "Серебристый", "weight": 503, "category": "Планшет"},
+    {"name": "AirPods Pro", "price": 24990, "brand": "Apple", "color": "Белый", "weight": 45, "category": "Наушники"},
+    {"name": "Sony WH-1000XM4", "price": 29990, "brand": "Sony", "color": "Черный", "weight": 254, "category": "Наушники"},
+    {"name": "Apple Watch Series 8", "price": 39990, "brand": "Apple", "color": "Золотой", "weight": 42, "category": "Смарт-часы"},
+    {"name": "Samsung Galaxy Watch", "price": 19990, "brand": "Samsung", "color": "Серебристый", "weight": 49, "category": "Смарт-часы"},
+    {"name": "PlayStation 5", "price": 59990, "brand": "Sony", "color": "Белый", "weight": 4500, "category": "Консоль"},
+    {"name": "Xbox Series X", "price": 49990, "brand": "Microsoft", "color": "Черный", "weight": 4400, "category": "Консоль"},
+    {"name": "Nintendo Switch", "price": 29990, "brand": "Nintendo", "color": "Синий-Красный", "weight": 398, "category": "Консоль"},
+    {"name": "Canon EOS R6", "price": 189990, "brand": "Canon", "color": "Черный", "weight": 680, "category": "Фотоаппарат"},
+    {"name": "Sony A7 III", "price": 159990, "brand": "Sony", "color": "Черный", "weight": 650, "category": "Фотоаппарат"},
+    {"name": "GoPro Hero 11", "price": 34990, "brand": "GoPro", "color": "Черный", "weight": 153, "category": "Экшн-камера"},
+    {"name": "Kindle Paperwhite", "price": 12990, "brand": "Amazon", "color": "Черный", "weight": 205, "category": "Электронная книга"},
+    {"name": "DJI Mini 3 Pro", "price": 79990, "brand": "DJI", "color": "Серый", "weight": 249, "category": "Дрон"},
+    {"name": "JBL Flip 6", "price": 8990, "brand": "JBL", "color": "Синий", "weight": 550, "category": "Колонка"},
+    {"name": "Logitech MX Master", "price": 8990, "brand": "Logitech", "color": "Графитовый", "weight": 145, "category": "Мышь"},
+    {"name": "Razer BlackWidow", "price": 12990, "brand": "Razer", "color": "Черный", "weight": 1040, "category": "Клавиатура"},
+    {"name": "WD My Passport", "price": 4990, "brand": "Western Digital", "color": "Красный", "weight": 130, "category": "Внешний диск"}
+]
 
 @lab3.route('/lab3/')
 def lab():
@@ -178,4 +207,79 @@ def clear_settings():
     resp.delete_cookie('name')
     resp.delete_cookie('name_color')
     resp.delete_cookie('age')
+    
+
+@lab3.route('/lab3/products')
+def products():
+    # Получаем цены из куки или из запроса
+    min_price_cookie = request.cookies.get('min_price')
+    max_price_cookie = request.cookies.get('max_price')
+    
+    min_price = request.args.get('min_price', min_price_cookie)
+    max_price = request.args.get('max_price', max_price_cookie)
+    
+    # Обработка сброса
+    if request.args.get('reset') == 'true':
+        min_price = ''
+        max_price = ''
+    
+    # Рассчитываем минимальную и максимальную цену среди всех товаров
+    all_prices = [product['price'] for product in PRODUCTS]
+    min_product_price = min(all_prices)
+    max_product_price = max(all_prices)
+    
+    # Фильтрация товаров
+    filtered_products = PRODUCTS
+    searched = False
+    
+    if min_price or max_price:
+        searched = True
+    
+    # Преобразуем в числа, если указаны
+        try:
+            min_val = float(min_price) if min_price else min_product_price
+            max_val = float(max_price) if max_price else max_product_price
+        except (ValueError, TypeError):
+            min_val = min_product_price
+            max_val = max_product_price
+        
+        # Автоматическое исправление, если min > max
+        if min_val > max_val:
+            min_val, max_val = max_val, min_val
+            # Меняем местами значения для отображения в форме
+            min_price, max_price = max_price, min_price
+        
+        # Фильтруем товары
+        filtered_products = [
+            product for product in PRODUCTS
+            if min_val <= product['price'] <= max_val
+        ]
+    
+    # Создаем ответ
+    resp = make_response(render_template(
+        'lab3/products.html',
+        products=filtered_products,
+        min_price=min_price,
+        max_price=max_price,
+        min_product_price=min_product_price,
+        max_product_price=max_product_price,
+        searched=searched
+    ))
+    
+    # Сохраняем значения в куки (если не сброс)
+    if request.args.get('reset') != 'true':
+        if min_price:
+            resp.set_cookie('min_price', min_price, max_age=30*24*3600)  # 30 дней
+        else:
+            resp.delete_cookie('min_price')
+        
+        if max_price:
+            resp.set_cookie('max_price', max_price, max_age=30*24*3600)  # 30 дней
+        else:
+            resp.delete_cookie('max_price')
+    else:
+        # Очищаем куки при сбросе
+        resp.delete_cookie('min_price')
+        resp.delete_cookie('max_price')
+    
     return resp
