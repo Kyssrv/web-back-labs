@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3 - Билет{% endblock %}
+
+{% block main %}
+    <h1>Железнодорожный билет</h1>
+    
+    <div style="border: 2px solid #333; padding: 20px; max-width: 600px; margin: 20px auto;">
+        <div style="text-align: center; border-bottom: 1px dashed #333; padding-bottom: 10px;">
+            <h2>Железнодорожный билет</h2>
+            {% if age < 18 %}
+                <div style="color: red; font-weight: bold;">Детский билет</div>
+            {% endif %}
+        </div>
+        
+        <div style="margin-top: 15px;">
+            <p><strong>Пассажир:</strong> {{ fio }}</p>
+            <p><strong>Возраст:</strong> {{ age }} лет</p>
+            <p><strong>Маршрут:</strong> {{ departure }} → {{ destination }}</p>
+            <p><strong>Дата поездки:</strong> {{ date }}</p>
+            <p><strong>Полка:</strong> 
+                {% if shelf == 'lower' %}Нижняя
+                {% elif shelf == 'upper' %}Верхняя
+                {% elif shelf == 'upper-side' %}Верхняя боковая
+                {% elif shelf == 'lower-side' %}Нижняя боковая
+                {% endif %}
+            </p>
+            <p><strong>Дополнительные услуги:</strong>
+                {% if linen == 'on' %}Бельё{% endif %}
+                {% if luggage == 'on' %}{% if linen == 'on' %}, {% endif %}Багаж{% endif %}
+                {% if insurance == 'on' %}{% if linen == 'on' or luggage == 'on' %}, {% endif %}Страховка{% endif %}
+                {% if linen != 'on' and luggage != 'on' and insurance != 'on' %}Нет{% endif %}
+            </p>
+        </div>
+        
+        <div style="text-align: right; border-top: 1px dashed #333; padding-top: 10px; margin-top: 15px;">
+            <h3>Итого к оплате: {{ price }} руб.</h3>
+        </div>
+    </div>
+    
+    <div>
+        <a href="/lab3/ticket">Оформить новый билет</a>
+    </div>
+{% endblock %}
