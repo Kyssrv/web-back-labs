@@ -7,8 +7,11 @@
     
     {% if name %}
         <div>Привет, <span style="color: {{ name_color }}">{{ name }}</span>!</div>
+        {% if age %}
+            <div>Ваш возраст: {{ age }}</div>
+        {% endif %}
     {% else %}
-        <div>Привет, <span style="color: #000000">None</span>!</div>
+        <div>Привет, <span style="color: #000000">Аноним</span>!</div>
     {% endif %}
     
     <div>Список сделанных страниц:</div>
@@ -17,5 +20,7 @@
         <li><a href="/lab3/clear-cookies">Очистить куки</a></li>
         <li><a href="/lab3/form1">Форма</a></li>
         <li><a href="/lab3/order">Заказ напитка</a></li>
+        <li><a href="/lab3/ticket">Железнодорожный билет</a></li>
+        <li><a href="/lab3/settings">Настройки</a></li>
     </ol>
 {% endblock %}
