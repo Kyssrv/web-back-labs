@@ -3,20 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %} - НГТУ</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block lab %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <style>
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        input, select {
+            margin: 5px 0;
+            padding: 5px;
+        }
+        form {
+            max-width: 400px;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>{% block header %}{% endblock %}</h1>
+        WEB-программирование, часть 2. {% block lab %}{% endblock %}
     </header>
     
     <main>
-        {% block content %}{% endblock %}
+        {% block main %}{% endblock %}
     </main>
     
     <footer>
-        <p>Иванов Иван Иванович, ФБ-00, 2 курс, 2024</p>
+        &copy; 
+        <a href="/">Главная страница</a>
+        <a href="/menu">Меню</a>
     </footer>
 </body>
 </html>
