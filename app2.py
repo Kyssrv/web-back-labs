@@ -1,20 +1,20 @@
-from flask import Flask
+from flask import Flask, request
+import datetime
 from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
-
+from lab4 import lab4
 
 app = Flask(__name__)
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
 app.register_blueprint(lab3)
-
+app.register_blueprint(lab4)
 
 # Глобальные переменные
 count = 0
 flower_list = ['роза', 'тюльпан', 'незабудка', 'ромашка']
 access_log = []
-
 
 @app.route("/")
 @app.route("/index")
@@ -33,6 +33,8 @@ def index():
                 <ul>
                     <li><a href="/lab1">Первая лабораторная</a></li>
                     <li><a href="/lab2">Вторая лабораторная</a></li>
+                    <li><a href="/lab3">Третья лабораторная</a></li>
+                    <li><a href="/lab4">Четвертая лабораторная</a></li>
                 </ul>
             </nav>
         </main>
@@ -42,6 +44,40 @@ def index():
     </body>
 </html>"""
 
+@app.route('/start')
+def start():
+    return '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>НГТУ, ФБ, Лабораторные работы</title>
+</head>
+<body>
+    <header>
+        НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных
+    </header>
+    
+    <div>
+        <a href="/lab1">Первая лабораторная</a>
+    </div>
+    
+    <div>
+        <a href="/lab2">Вторая лабораторная</a>
+    </div>
+    
+    <div>
+        <a href="/lab3">Третья лабораторная</a>
+    </div>
+    
+    <div>
+        <a href="/lab4">Четвертая лабораторная</a>
+    </div>
+    
+    <footer>
+        &copy; София Кучерова, ФБИ-33, 2025
+    </footer>
+</body>
+</html>'''
 
 # Обработчики ошибок
 @app.errorhandler(404)
@@ -83,36 +119,5 @@ def internal_error(err):
     </body>
 </html>""", 500
 
-@app.route('/start')
-def start():
-    return '''
-<!DOCTYPE html>
-<html>
-<head>
-    <title>НГТУ, ФБ, Лабораторные работы</title>
-</head>
-<body>
-    <header>
-        НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных
-    </header>
-    
-    <div>
-        <a href="/lab1">Первая лабораторная</a>
-    </div>
-    
-    <div>
-        <a href="/lab2">Вторая лабораторная</a>
-    </div>
-    
-    <div>
-        <a href="/lab3/">Третья лабораторная</a>
-    </div>
-    
-    <footer>
-        &copy; София Кучерова, ФБИ-33, 2025
-    </footer>
-</body>
-</html>
-
 if name == "__main__":
-    app.run(debug=True)'''
+    app.run(debug=True)
