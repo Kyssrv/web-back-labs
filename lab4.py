@@ -1,7 +1,11 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect
 
 lab4 = Blueprint('lab4', __name__)
 
+# Глобальная переменная для счетчика деревьев
+tree_count = 0
+
+# Существующие маршруты для арифметических операций
 @lab4.route('/lab4/')
 def lab():
     return render_template('lab4/lab4.html')
@@ -41,8 +45,8 @@ def sum_form():
 
 @lab4.route('/lab4/sum', methods=['POST'])
 def sum():
-    x1 = request.form.get('x1', '0')  # По умолчанию 0 если пустое
-    x2 = request.form.get('x2', '0')  # По умолчанию 0 если пустое
+    x1 = request.form.get('x1', '0')
+    x2 = request.form.get('x2', '0')
     
     try:
         num1 = float(x1) if x1 else 0.0
@@ -62,8 +66,8 @@ def mult_form():
 
 @lab4.route('/lab4/mult', methods=['POST'])
 def mult():
-    x1 = request.form.get('x1', '1')  # По умолчанию 1 если пустое
-    x2 = request.form.get('x2', '1')  # По умолчанию 1 если пустое
+    x1 = request.form.get('x1', '1')
+    x2 = request.form.get('x2', '1')
     
     try:
         num1 = float(x1) if x1 else 1.0
@@ -119,7 +123,6 @@ def power():
         num1 = float(x1)
         num2 = float(x2)
         
-        # Проверка: оба числа равны нулю
         if num1 == 0 and num2 == 0:
             error = "Оба числа не могут быть равны нулю"
             return render_template('lab4/pow-form.html', error=error)
@@ -131,3 +134,24 @@ def power():
     except ValueError:
         error = "Введите корректные числа"
         return render_template('lab4/pow-form.html', error=error)
+
+# Новый маршрут для счетчика деревьев с валидацией
+@lab4.route('/lab4/tree', methods=['GET', 'POST'])
+def tree():
+    global tree_count
+    
+    if request.method == 'GET':
+        return render_template('lab4/tree.html', 
+                             tree_count=tree_count,
+                             can_plant=tree_count < 10,
+                             can_cut=tree_count > 0)
+    
+    operation = request.form.get('operation')
+    
+    # Валидация на сервере
+    if operation == 'cut' and tree_count > 0:
+        tree_count -= 1
+    elif operation == 'plant' and tree_count < 10:
+        tree_count += 1
+    
+    return redirect('/lab4/tree')
