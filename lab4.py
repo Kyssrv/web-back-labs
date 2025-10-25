@@ -1,4 +1,4 @@
-rom flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request
 
 lab4 = Blueprint('lab4', __name__)
 
@@ -12,32 +12,122 @@ def div_form():
 
 @lab4.route('/lab4/div', methods=['POST'])
 def div():
-    # Получаем данные из формы
     x1 = request.form.get('x1')
     x2 = request.form.get('x2')
     
-    # Проверяем, что оба числа были введены
     if not x1 or not x2:
         error = "Оба числа должны быть заполнены"
         return render_template('lab4/div-form.html', error=error)
     
     try:
-        # Преобразуем в числа
         num1 = float(x1)
         num2 = float(x2)
         
-        # Проверяем деление на ноль
         if num2 == 0:
             error = "Деление на ноль невозможно"
             return render_template('lab4/div-form.html', error=error)
         
-        # Выполняем деление
         result = num1 / num2
-        
-        # Возвращаем результат
         return render_template('lab4/div-form.html', 
                              x1=num1, x2=num2, result=result)
     
     except ValueError:
         error = "Введите корректные числа"
         return render_template('lab4/div-form.html', error=error)
+
+@lab4.route('/lab4/sum-form')
+def sum_form():
+    return render_template('lab4/sum-form.html')
+
+@lab4.route('/lab4/sum', methods=['POST'])
+def sum():
+    x1 = request.form.get('x1', '0')  # По умолчанию 0 если пустое
+    x2 = request.form.get('x2', '0')  # По умолчанию 0 если пустое
+    
+    try:
+        num1 = float(x1) if x1 else 0.0
+        num2 = float(x2) if x2 else 0.0
+        
+        result = num1 + num2
+        return render_template('lab4/sum-form.html', 
+                             x1=num1, x2=num2, result=result)
+    
+    except ValueError:
+        error = "Введите корректные числа"
+        return render_template('lab4/sum-form.html', error=error)
+
+@lab4.route('/lab4/mult-form')
+def mult_form():
+    return render_template('lab4/mult-form.html')
+
+@lab4.route('/lab4/mult', methods=['POST'])
+def mult():
+    x1 = request.form.get('x1', '1')  # По умолчанию 1 если пустое
+    x2 = request.form.get('x2', '1')  # По умолчанию 1 если пустое
+    
+    try:
+        num1 = float(x1) if x1 else 1.0
+        num2 = float(x2) if x2 else 1.0
+        
+        result = num1 * num2
+        return render_template('lab4/mult-form.html', 
+                             x1=num1, x2=num2, result=result)
+    
+    except ValueError:
+        error = "Введите корректные числа"
+        return render_template('lab4/mult-form.html', error=error)
+
+@lab4.route('/lab4/sub-form')
+def sub_form():
+    return render_template('lab4/sub-form.html')
+
+@lab4.route('/lab4/sub', methods=['POST'])
+def sub():
+    x1 = request.form.get('x1')
+    x2 = request.form.get('x2')
+    
+    if not x1 or not x2:
+        error = "Оба числа должны быть заполнены"
+        return render_template('lab4/sub-form.html', error=error)
+    
+    try:
+        num1 = float(x1)
+        num2 = float(x2)
+        
+        result = num1 - num2
+        return render_template('lab4/sub-form.html', 
+                             x1=num1, x2=num2, result=result)
+    
+    except ValueError:
+        error = "Введите корректные числа"
+        return render_template('lab4/sub-form.html', error=error)
+
+@lab4.route('/lab4/pow-form')
+def pow_form():
+    return render_template('lab4/pow-form.html')
+
+@lab4.route('/lab4/pow', methods=['POST'])
+def power():
+    x1 = request.form.get('x1')
+    x2 = request.form.get('x2')
+    
+    if not x1 or not x2:
+        error = "Оба числа должны быть заполнены"
+        return render_template('lab4/pow-form.html', error=error)
+    
+    try:
+        num1 = float(x1)
+        num2 = float(x2)
+        
+        # Проверка: оба числа равны нулю
+        if num1 == 0 and num2 == 0:
+            error = "Оба числа не могут быть равны нулю"
+            return render_template('lab4/pow-form.html', error=error)
+        
+        result = num1 ** num2
+        return render_template('lab4/pow-form.html', 
+                             x1=num1, x2=num2, result=result)
+    
+    except ValueError:
+        error = "Введите корректные числа"
+        return render_template('lab4/pow-form.html', error=error)

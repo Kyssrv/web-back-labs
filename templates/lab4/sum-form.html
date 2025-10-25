@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 4{% endblock %}
+
+{% block main %}
+    <h1>Сложение чисел</h1>
+    
+    {% if error %}
+        <div style="color: red; font-weight: bold; margin-bottom: 20px;">
+            Ошибка: {{ error }}
+        </div>
+    {% endif %}
+    
+    <form method="post" action="/lab4/sum">
+        <div>
+            <label for="x1">Первое число (x1):</label>
+            <input type="text" id="x1" name="x1" value="{{ x1 or '' }}">
+            <small>Если пустое - считается как 0</small>
+        </div>
+        
+        <div>
+            <label for="x2">Второе число (x2):</label>
+            <input type="text" id="x2" name="x2" value="{{ x2 or '' }}">
+            <small>Если пустое - считается как 0</small>
+        </div>
+        
+        <div>
+            <button type="submit">Вычислить</button>
+        </div>
+        
+        {% if result is defined %}
+        <div style="margin-top: 20px; font-weight: bold;">
+            Результат: {{ x1 }} + {{ x2 }} = {{ result }}
+        </div>
+        {% endif %}
+    </form>
+    
+    <div style="margin-top: 20px;">
+        <a href="/lab4/">Назад к лабораторной работе 4</a>
+    </div>
+{% endblock %}
