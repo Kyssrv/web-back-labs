@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block lab %}Список пользователей{% endblock %}
+
+{% block main %}
+    <h1>Список пользователей</h1>
+    
+    <div style="margin-bottom: 20px;">
+        <p>Добро пожаловать! Вы вошли как: 
+            {% for user in users %}
+                {% if user.login == current_user_login %}
+                    <strong>{{ user.name }}</strong> ({{ user.login }})
+                {% endif %}
+            {% endfor %}
+        </p>
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+        <a href="{{ url_for('lab4.edit_user') }}" class="btn" style="background-color: #2196f3; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-right: 10px;">
+            Редактировать мои данные
+        </a>
+        
+        <form action="{{ url_for('lab4.delete_user') }}" method="POST" style="display: inline;">
+            <button type="submit" class="btn" style="background-color: #f44336; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;" 
+                    onclick="return confirm('Вы уверены, что хотите удалить свой аккаунт?')">
+                Удалить мой аккаунт
+            </button>
+        </form>
+        
+        <a href="{{ url_for('lab4.logout') }}" class="btn" style="background-color: #ff9800; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-left: 10px;">
+            Выйти
+        </a>
+    </div>
+    
+    <h2>Все пользователи:</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #f5f5f5;">
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Имя</th>
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Логин</th>
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Пол</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">
+                    {{ user.name }}
+                    {% if user.login == current_user_login %}
+                        <strong>(Вы)</strong>
+                    {% endif %}
+                </td>
+                <td style="padding: 10px; border: 1px solid #ddd;">{{ user.login }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">
+                    {% if user.gender == 'male' %}
+                        Мужской
+                    {% elif user.gender == 'female' %}
+                        Женский
+                    {% else %}
+                        Другой
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

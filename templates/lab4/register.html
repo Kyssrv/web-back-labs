@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block lab %}Регистрация{% endblock %}
+
+{% block main %}
+    <h1>Регистрация</h1>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="login">Логин:</label>
+            <input type="text" id="login" name="login" value="{{ login or '' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="name">Имя:</label>
+            <input type="text" id="name" name="name" value="{{ name or '' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password_confirm">Подтверждение пароля:</label>
+            <input type="password" id="password_confirm" name="password_confirm" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="gender">Пол:</label>
+            <select id="gender" name="gender">
+                <option value="male">Мужской</option>
+                <option value="female">Женский</option>
+                <option value="other">Другой</option>
+            </select>
+        </div>
+        
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+    
+    {% if error %}
+        <div class="error" style="color: #d32f2f; font-weight: bold; margin-top: 20px; padding: 15px; background-color: #ffebee; border: 1px solid #f44336; border-radius: 5px;">
+            {{ error }}
+        </div>
+    {% endif %}
+    
+    <div style="margin-top: 20px;">
+        <p>Уже есть аккаунт? <a href="{{ url_for('lab4.login') }}">Войдите</a></p>
+    </div>
+{% endblock %}

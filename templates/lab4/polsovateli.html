@@ -1,0 +1,169 @@
+from flask import session, redirect, url_for
+
+# Глобальный список пользователей (в реальном приложении следует использовать БД)
+users = [
+    {'login': 'alex', 'password': '123', 'name': 'Алексей Петров', 'gender': 'male'},
+    {'login': 'bob', 'password': '555', 'name': 'Боб Смит', 'gender': 'male'},
+    {'login': 'maria', 'password': 'qwerty', 'name': 'Мария Иванова', 'gender': 'female'},
+    {'login': 'john', 'password': 'admin123', 'name': 'Джон Доу', 'gender': 'male'},
+    {'login': 'anna', 'password': 'anna2024', 'name': 'Анна Сидорова', 'gender': 'female'}
+]
+
+# Роут для регистрации
+@lab4.route('/lab4/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('lab4/register.html')
+    
+    login = request.form.get('login')
+    password = request.form.get('password')
+    password_confirm = request.form.get('password_confirm')
+    name = request.form.get('name')
+    gender = request.form.get('gender')
+    
+    # Проверка на пустые значения
+    if not login or not password or not password_confirm or not name:
+        error = 'Все поля обязательны для заполнения'
+        return render_template('lab4/register.html', error=error, login=login, name=name)
+    
+    # Проверка совпадения паролей
+    if password != password_confirm:
+        error = 'Пароли не совпадают'
+        return render_template('lab4/register.html', error=error, login=login, name=name)
+    
+    # Проверка уникальности логина
+    for user in users:
+        if user['login'] == login:
+            error = 'Пользователь с таким логином уже существует'
+            return render_template('lab4/register.html', error=error, login=login, name=name)
+    
+    # Добавление нового пользователя
+    new_user = {
+        'login': login,
+        'password': password,
+        'name': name,
+        'gender': gender
+    }
+    users.append(new_user)
+    
+    # Автоматическая авторизация после регистрации
+    session['user_login'] = login
+    return redirect(url_for('lab4.users_list'))
+
+# Обновленный роут логина с сохранением сессии
+@lab4.route('/lab4/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('lab4/login.html', authorized=False)
+    
+    login = request.form.get('login')
+    password = request.form.get('password')
+    saved_login = login or ''
+    
+    if not login:
+        error = 'Не введён логин'
+        return render_template('lab4/login.html', error=error, authorized=False, login=saved_login)
+    
+    if not password:
+        error = 'Не введён пароль'
+        return render_template('lab4/login.html', error=error, authorized=False, login=saved_login)
+    
+    for user in users:
+        if login == user['login'] and password == user['password']:
+            session['user_login'] = login
+            return render_template('lab4/login.html', name=user['name'], authorized=True)
+    
+    error = 'Неверные логин и/или пароль'
+    return render_template('lab4/login.html', error=error, authorized=False, login=saved_login)
+
+# Роут для выхода
+@lab4.route('/lab4/logout')
+def logout():
+    session.pop('user_login', None)
+    return redirect(url_for('lab4.login'))
+
+# Роут для списка пользователей (только для авторизованных)
+@lab4.route('/lab4/users')
+def users_list():
+    if 'user_login' not in session:
+        return redirect(url_for('lab4.login'))
+    
+    current_user_login = session['user_login']
+    return render_template('lab4/users.html', users=users, current_user_login=current_user_login)
+
+# Роут для удаления пользователя
+@lab4.route('/lab4/delete_user', methods=['POST'])
+def delete_user():
+    if 'user_login' not in session:
+        return redirect(url_for('lab4.login'))
+    
+    user_login = session['user_login']
+    
+    # Находим и удаляем пользователя
+    global users
+    users = [user for user in users if user['login'] != user_login]
+    
+    # Выход из системы после удаления
+    session.pop('user_login', None)
+    return redirect(url_for('lab4.login'))
+
+# Роут для редактирования пользователя
+@lab4.route('/lab4/edit_user', methods=['GET', 'POST'])
+def edit_user():
+    if 'user_login' not in session:
+        return redirect(url_for('lab4.login'))
+    
+    user_login = session['user_login']
+    current_user = None
+    
+    # Находим текущего пользователя
+    for user in users:
+        if user['login'] == user_login:
+            current_user = user
+            break
+    
+    if not current_user:
+        session.pop('user_login', None)
+        return redirect(url_for('lab4.login'))
+    
+    if request.method == 'GET':
+        return render_template('lab4/edit_user.html', user=current_user)
+    
+    # Обработка формы редактирования
+    new_login = request.form.get('login')
+    password = request.form.get('password')
+    password_confirm = request.form.get('password_confirm')
+    name = request.form.get('name')
+    gender = request.form.get('gender')
+    
+    # Проверка обязательных полей
+    if not new_login or not name:
+        error = 'Логин и имя обязательны для заполнения'
+        return render_template('lab4/edit_user.html', user=current_user, error=error)
+    
+    # Проверка уникальности логина (если изменился)
+    if new_login != user_login:
+        for user in users:
+            if user['login'] == new_login:
+                error = 'Пользователь с таким логином уже существует'
+                return render_template('lab4/edit_user.html', user=current_user, error=error)
+    
+    # Проверка паролей
+    if password or password_confirm:
+        if password != password_confirm:
+            error = 'Пароли не совпадают'
+            return render_template('lab4/edit_user.html', user=current_user, error=error)
+        # Обновляем пароль только если введен новый
+        current_user['password'] = password
+    # Если пароли пустые - оставляем старый
+    
+    # Обновляем данные пользователя
+    current_user['login'] = new_login
+    current_user['name'] = name
+    current_user['gender'] = gender
+    
+    # Обновляем логин в сессии если он изменился
+    if new_login != user_login:
+        session['user_login'] = new_login
+    
+    return redirect(url_for('lab4.users_list'))
