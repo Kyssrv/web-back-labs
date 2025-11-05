@@ -156,17 +156,27 @@ def tree():
     
     return redirect('/lab4/tree')
 
-#Роут для обработки запроса на адрес /lab4/login
-@lab4.route('/lab4/login', methods= ['GET', 'POST'])
+# Добавляем пользователей в список
+users = [
+    {'login': 'alex', 'password': 123},
+    {'login': 'bob', 'password': 555},
+    {'login': 'maria', 'password': 'qwerty'},  # Добавленный пользователь
+    {'login': 'john', 'password': 'admin123'}   # Добавленный пользователь
+]
+
+# Роут для обработки запроса на адрес /lab4/login
+@lab4.route('/lab4/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('lab4/login.html',authorized = False)
+        return render_template('lab4/login.html', authorized=False)
     
     login = request.form.get('login')
-    password = reguest.form.get('password')
+    password = request.form.get('password')  
 
-    if login == 'alex' and password == '123':
-        return render_template ('/lab4/login.html', error= 'Успешная авторизация')
+    for user in users:
+        # Сравниваем логин и пароль (приводим к строке для единообразия)
+        if login == user['login'] and str(password) == str(user['password']):
+            return render_template('lab4/login.html', login=login, authorized=True)  # Исправлено: authorised -> authorized
     
     error = 'Неверные логин и/или пароль'
-    return render_template('lab4/login.html', error=error, authorised = False)
+    return render_template('lab4/login.html', error=error, authorized=False)
