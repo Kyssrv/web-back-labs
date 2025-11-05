@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, session
 
 lab4 = Blueprint('lab4', __name__)
-
+  
 # Глобальная переменная для счетчика деревьев
 tree_count = 0
 
@@ -168,7 +168,13 @@ users = [
 @lab4.route('/lab4/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('lab4/login.html', authorized=False)
+       if 'login' in session:
+           authorized= True
+           login =session ['login']
+        else:
+            authorized= False
+            login=''
+        return render_template('lab4/login.html', authorized=authorized, login=login)
     
     login = request.form.get('login')
     password = request.form.get('password')  
@@ -176,7 +182,13 @@ def login():
     for user in users:
         # Сравниваем логин и пароль (приводим к строке для единообразия)
         if login == user['login'] and str(password) == str(user['password']):
-            return render_template('lab4/login.html', login=login, authorized=True)  # Исправлено: authorised -> authorized
+            session['login']=login
+            return redirect('/lab4/login')
     
     error = 'Неверные логин и/или пароль'
     return render_template('lab4/login.html', error=error, authorized=False)
+
+@lab4.route('/lab4/login', methods=['POST'])
+def logout ():
+    session.pop ('login', None)
+    return redirect ('/lab4/login')
