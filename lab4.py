@@ -242,3 +242,71 @@ def fridge():
                          temperature=temp, 
                          snowflakes=snowflakes, 
                          success=True)
+
+@lab4.route('/lab4/grain', methods=['GET', 'POST'])
+def grain():
+    if request.method == 'GET':
+        return render_template('lab4/grain.html')
+    
+    grain_type = request.form.get('grain_type')
+    weight = request.form.get('weight')
+    
+    # Проверка на пустые значения
+    if not grain_type:
+        error = 'Не выбрано зерно'
+        return render_template('lab4/grain.html', error=error)
+    
+    if not weight:
+        error = 'Не указан вес'
+        return render_template('lab4/grain.html', error=error)
+    
+    try:
+        weight = float(weight)
+    except ValueError:
+        error = 'Вес должен быть числом'
+        return render_template('lab4/grain.html', error=error)
+    
+    # Проверка веса на положительное значение
+    if weight <= 0:
+        error = 'Вес должен быть положительным числом'
+        return render_template('lab4/grain.html', error=error)
+    
+    # Проверка на максимальный объем
+    if weight > 100:
+        error = 'Такого объёма сейчас нет в наличии'
+        return render_template('lab4/grain.html', error=error)
+    
+    # Цены за тонну
+    prices = {
+        'barley': 12000,  # ячмень
+        'oats': 8500,     # овёс
+        'wheat': 9000,    # пшеница
+        'rye': 15000      # рожь
+    }
+    
+    # Названия зерна для вывода
+    grain_names = {
+        'barley': 'ячмень',
+        'oats': 'овёс', 
+        'wheat': 'пшеница',
+        'rye': 'рожь'
+    }
+    
+    price_per_ton = prices[grain_type]
+    total = weight * price_per_ton
+    discount = 0
+    discount_applied = False
+    
+    # Применение скидки за большой объем
+    if weight > 10:
+        discount = total * 0.1
+        total -= discount
+        discount_applied = True
+    
+    return render_template('lab4/grain.html', 
+                         success=True,
+                         grain_name=grain_names[grain_type],
+                         weight=weight,
+                         total=total,
+                         discount_applied=discount_applied,
+                         discount=discount)
