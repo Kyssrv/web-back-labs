@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+<style>
+    .menu-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+    }
+    
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #2c3e50;
+    }
+    
+    .welcome {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 18px;
+        color: #7f8c8d;
+    }
+    
+    .username {
+        font-weight: bold;
+        color: #e74c3c;
+    }
+    
+    .nav-menu {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+    }
+    
+    .nav-button {
+        padding: 12px 24px;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    
+    .nav-button:hover {
+        background-color: #2980b9;
+    }
+    
+    .description {
+        text-align: center;
+        color: #7f8c8d;
+        line-height: 1.6;
+        margin-top: 30px;
+    }
+</style>
+
+<div class="menu-container">
+    <div class="header">
+        <h1>База знаний</h1>
+    </div>
+    
+    <div class="welcome">
+        Текущий пользователь: <span class="username">{{ username }}</span>
+    </div>
+    
+    <div class="nav-menu">
+        <a href="{{ url_for('lab5.login') }}" class="nav-button">Вход</a>
+        <a href="{{ url_for('lab5.register') }}" class="nav-button">Регистрация</a>
+        <a href="{{ url_for('lab5.list_articles') }}" class="nav-button">Список статей</a>
+        <a href="{{ url_for('lab5.create') }}" class="nav-button">Создать статью</a>
+    </div>
+    
+    <div class="description">
+        <p>Добро пожаловать в систему управления базой знаний!</p>
+        <p>Здесь вы можете создавать, просматривать и управлять своими статьями.</p>
+    </div>
+</div>
+{% endblock %}
