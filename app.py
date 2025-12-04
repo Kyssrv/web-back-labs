@@ -1,26 +1,19 @@
-from flask import Flask, request
-import datetime
+from flask import Flask, url_for, request, redirect, abort, render_template, session
+import os
+from datetime import datetime
 from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
 from lab4 import lab4
-from lab5 import lab5  
-
+from lab5 import lab5
 app = Flask(__name__)
-app.secret_key = 'секретно-секретный-секрет'
-
-# Регистрируем blueprint для лабораторной работы 5
-app.register_blueprint(lab5)
-
-app = Flask (__name__)
-
-app.secret_key= 'секретно-секретный секрет'
-
-app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'секретно-секретный секрет')
+app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
 app.register_blueprint(lab3)
 app.register_blueprint(lab4)
+app.register_blueprint(lab5)
 
 # Глобальные переменные
 count = 0
@@ -46,6 +39,7 @@ def index():
                     <li><a href="/lab2">Вторая лабораторная</a></li>
                     <li><a href="/lab3">Третья лабораторная</a></li>
                     <li><a href="/lab4">Четвертая лабораторная</a></li>
+                    <li><a href="/lab5">Пятая лабораторная</a></li>
                 </ul>
             </nav>
         </main>
@@ -129,6 +123,3 @@ def internal_error(err):
         <a href="/">Вернуться на главную</a>
     </body>
 </html>""", 500
-
-if name == "__main__":
-    app.run(debug=True)
