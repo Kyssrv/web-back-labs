@@ -5,6 +5,7 @@ from lab2 import lab2
 from lab3 import lab3
 from lab4 import lab4
 from lab5 import lab5  
+from lab6 import lab6
 
 app = Flask(__name__)
 app.secret_key = 'секретно-секретный-секрет'
@@ -83,7 +84,15 @@ def start():
     <div>
         <a href="/lab4">Четвертая лабораторная</a>
     </div>
+
+    <div>
+        <a href="/lab5">Пятая лабораторная</a>
+    </div>
     
+    <div>
+        <a href="/lab6">Шестая лабораторная</a>
+    </div>
+
     <footer>
         &copy; София Кучерова, ФБИ-33, 2025
     </footer>
