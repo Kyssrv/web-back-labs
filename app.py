@@ -8,6 +8,7 @@ from lab4 import lab4
 <<<<<<< HEAD:app2.py
 from lab5 import lab5  
 from lab6 import lab6
+from lab7 import lab7
 
 app = Flask(__name__)
 app.secret_key = 'секретно-секретный-секрет'
@@ -30,6 +31,8 @@ app.register_blueprint(lab2)
 app.register_blueprint(lab3)
 app.register_blueprint(lab4)
 app.register_blueprint(lab5)
+app.register_blueprint(lab6)
+app.register_blueprint(lab7)
 
 # Глобальные переменные
 count = 0
@@ -100,6 +103,10 @@ def start():
     
     <div>
         <a href="/lab6">Шестая лабораторная</a>
+    </div>
+
+    <div>
+        <a href="/lab7">Седьмая лабораторная</a>
     </div>
 
     <footer>
