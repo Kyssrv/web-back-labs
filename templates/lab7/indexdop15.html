@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 7 (с БД){% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='lab7/main.js') }}"></script>
+<style>
+    /* Существующие стили остаются... */
+    
+    /* Дополнительные стили для БД */
+    .stats-panel {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #667eea;
+        font-size: 14px;
+    }
+    
+    .char-counter {
+        font-size: 12px;
+        margin-top: 5px;
+        font-weight: 500;
+    }
+    
+    .db-info {
+        background-color: #e8f4fd;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        color: #2c3e50;
+        margin-top: 10px;
+        border: 1px solid #b8daff;
+    }
+    
+    .validation-hint {
+        font-size: 11px;
+        color: #7f8c8d;
+        margin-top: 3px;
+    }
+    
+    .year-range {
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<h1>🎬 Управление фильмами (База данных)</h1>
+
+<div class="stats-panel" id="stats">
+    <strong>Статистика:</strong> Загрузка...
+</div>
+
+<div class="db-info">
+    💾 <strong>Используется SQLite база данных</strong> | Фильмы хранятся постоянно
+</div>
+
+<button class="add-btn" onclick="addFilm()">➕ Добавить новый фильм</button>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Русское название</th>
+            <th>Оригинальное название</th>
+            <th>Год</th>
+            <th>Длина описания</th>
+            <th>Добавлен</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody id="film-list"></tbody>
+</table>
+
+<div id="filmModal" class="modal">
+    <div class="modal-content">
+        <h2 id="modalTitle">Добавление фильма</h2>
+        <input type="hidden" id="id">
+        
+        <div class="validation-hint">Поля, отмеченные *, обязательны для заполнения</div>
+        
+        <label>
+            Название фильма на русском: *
+            <input type="text" id="title_ru" placeholder="Введите русское название (макс. 200 символов)">
+            <div id="title_ru_error" class="error-message"></div>
+        </label>
+        
+        <label>
+            Название фильма на оригинальном языке:
+            <input type="text" id="title" placeholder="Введите оригинальное название (макс. 200 символов)">
+            <div class="validation-hint">Если оставить пустым, будет использовано русское название</div>
+            <div id="title_error" class="error-message"></div>
+        </label>
+        
+        <label>
+            Год выпуска: *
+            <input type="number" id="year" placeholder="Например: 1994" min="1895" max="2025">
+            <div class="year-range">Допустимый диапазон: 1895–2025</div>
+            <div id="year_error" class="error-message"></div>
+        </label>
+        
+        <label>
+            Описание: *
+            <textarea id="description" placeholder="Введите описание фильма (10-2000 символов)" 
+                      rows="5" oninput="updateCharCounter()"></textarea>
+            <div id="description_error" class="error-message"></div>
+        </label>
+        
+        <div class="modal-buttons">
+            <button class="modal-ok" onclick="sendFilm()">Сохранить</button>
+            <button class="modal-cancel" onclick="cancel()">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    fillFilmList();
+</script>
+{% endblock %}
