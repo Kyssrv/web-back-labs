@@ -93,9 +93,18 @@ function fillFilmList(){
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify(film)
                 })
-                .then(function(){
-                    fillFilmList();
-                    hideModal();
+                .then(function(resp){
+                    if(resp.ok){
+                        fillFilmList();
+                        hideModal();
+                        return();
+                    }
+                    return resp.json();
+                })
+                .then(function(console.errors{
+                    if(errors.description)
+                        document.getElementById('description-error').innerText=errors.description;
+
                 });
             }
 
