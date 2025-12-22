@@ -20,6 +20,9 @@ function fillFilmList(){
 
             let editButton = document.createElement('button');
             editButton.innerText='редактировать';
+            editButton.onclick = function() {
+                editFilm(i);
+            }
 
             let delButton=document.createElement('button');
             delButton.innerText= 'удалить';
@@ -58,27 +61,43 @@ function fillFilmList(){
                 document.getElementById('description').value='';
                 showModal();
             }
+            
+
+            function editFilm(id){
+                fetch('/lab7/rest-api/films/${id}')
+                .then(function(data){
+                    return data.json();
+                })
+                .then(function(film){
+                    document.getElementById('id').value = id;
+                    document.getElementById('title').value='film.title';
+                    document.getElementById('title-ru').value='film.title_ru';
+                    document.getElementById('year').value='film.year';
+                    document.getElementById('description').value='film.description';
+                })
+            }
             function sendFilm(){
+                const id = document.getElementById('id').value;
                 const film = {
                     title: document.getElementById('title').value,
                     title_ru: document.getElementById('title-ru').value,
                     year: document.getElementById('year').value,
                     description: document.getElementById('description').value
                 }
+                        
+                const url = '/lab7/rest-api/film/${id}';
+                const method = id === '' ? 'POST': 'PUT';
+
+                fetch(url, {
+                    method: method,
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(film)
+                })
+                .then(function(){
+                    fillFilmList();
+                    hideModal();
+                });
             }
-
-            const url = '/lab7/rest-api/film/';
-            const method = 'POST';
-
-            fetch(url, {
-                method: method,
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(film)
-            })
-            .then(function(){
-                fillFilmList();
-                hideModal();
-            });
 
             tr.append(tdTitle);
             tr.append(tdTitleRus);
