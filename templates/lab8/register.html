@@ -1,0 +1,84 @@
+{% extends "lab8/base.html" %}
+
+{% block title %}Регистрация - База знаний{% endblock %}
+
+{% block lab %}Лабораторная работа 8 - Регистрация{% endblock %}
+
+{% block main %}
+    <div class="register-container">
+        <h1>Регистрация</h1>
+        
+        {% if error %}
+            <div class="error-message">
+                <strong>Ошибка:</strong> {{ error }}
+            </div>
+        {% endif %}
+        
+        {% if success %}
+            <div class="success-message">
+                <strong>Успех!</strong> {{ success }}
+            </div>
+        {% endif %}
+        
+        <form action="/lab8/register" method="post" class="register-form">
+            <div class="form-group">
+                <label for="login">
+                    Логин:
+                    <input type="text" 
+                           id="login" 
+                           name="login" 
+                           required
+                           placeholder="Введите логин"
+                           value="{{ request.form.login if request.form }}">
+                </label>
+                <small class="form-text">Минимум 3 символа, только буквы и цифры</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">
+                    Пароль:
+                    <input type="password" 
+                           id="password" 
+                           name="password" 
+                           required
+                           placeholder="Введите пароль">
+                </label>
+                <small class="form-text">Минимум 3 символа</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password">
+                    Подтверждение пароля:
+                    <input type="password" 
+                           id="confirm_password" 
+                           name="confirm_password" 
+                           required
+                           placeholder="Повторите пароль">
+                </label>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                <a href="{{ url_for('lab8.login') }}" class="btn btn-secondary">Уже есть аккаунт? Войти</a>
+            </div>
+        </form>
+        
+        <div class="additional-info">
+            <p>После регистрации вы сможете:</p>
+            <ul>
+                <li>Создавать свои статьи</li>
+                <li>Редактировать и удалять свои статьи</li>
+                <li>Добавлять статьи в избранное</li>
+                <li>Просматривать публичные статьи других пользователей</li>
+            </ul>
+        </div>
+        
+        <div class="test-link">
+            <p>
+                <a href="{{ url_for('lab8.test_users') }}" class="btn-test">
+                    Проверить зарегистрированных пользователей
+                </a>
+            </p>
+        </div>
+    </div>
+{% endblock %}

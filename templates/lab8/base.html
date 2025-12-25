@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}База знаний{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/lab8.css') }}">
+    <style>
+        /* Дополнительные стили для сообщений */
+        .error-message {
+            background-color: #fee;
+            color: #c33;
+            padding: 12px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c33;
+            animation: fadeIn 0.5s;
+        }
+        
+        .success-message {
+            background-color: #dfd;
+            color: #2a7;
+            padding: 12px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2a7;
+            animation: fadeIn 0.5s;
+        }
+        
+        .register-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .register-form {
+            margin: 30px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-text {
+            display: block;
+            margin-top: 5px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 2;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+            flex: 1;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .additional-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .additional-info ul {
+            margin: 10px 0 0 20px;
+        }
+        
+        .additional-info li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .test-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .btn-test {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #f0f0f0;
+            color: #666;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-test:hover {
+            background: #e0e0e0;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <h1>База знаний</h1>
+            <nav class="nav-menu">
+                <a href="{{ url_for('lab8.index') }}" class="nav-link">Главная</a>
+                <a href="{{ url_for('lab8.articles_list') }}" class="nav-link">Список статей</a>
+                <a href="{{ url_for('lab8.create_article') }}" class="nav-link">Создать статью</a>
+                
+                {% if session.username %}
+                    <a href="{{ url_for('lab8.logout') }}" class="nav-link">Выйти</a>
+                    <div class="user-info">
+                        <span class="username">{{ session.username }}</span>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('lab8.login') }}" class="nav-link">Войти</a>
+                    <a href="{{ url_for('lab8.register') }}" class="nav-link highlight">Регистрация</a>
+                    <div class="user-info">
+                        <span class="username">anonymous</span>
+                    </div>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <main class="main-content">
+            {% block lab %}
+            <h2>Лабораторная работа 8</h2>
+            {% endblock %}
+            
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-info">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            {% block main %}{% endblock %}
+        </main>
+        
+        <footer>
+            <p>Лабораторная работа №8 | WEB-программирование | 2025 год</p>
+            <p>Система управления базой знаний</p>
+        </footer>
+    </div>
+</body>
+</html>

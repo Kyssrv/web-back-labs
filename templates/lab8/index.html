@@ -1,0 +1,86 @@
+{% extends "lab8/base.html" %}
+
+{% block lab %}Лабораторная работа 8{% endblock %}
+
+{% block main %}
+    <h2 class="welcome-title">
+        {% if session.username %}
+            Добро пожаловать, {{ session.username }}!
+        {% else %}
+            Добро пожаловать в Базу знаний!
+        {% endif %}
+    </h2>
+    
+    <p class="welcome-text">
+        {% if session.username %}
+            Вы успешно вошли в систему. Теперь вы можете создавать статьи, редактировать их и управлять своей базой знаний.
+        {% else %}
+            Это система для создания, хранения и управления статьями и знаниями. 
+            Зарегистрируйтесь, чтобы получить доступ ко всем возможностям!
+        {% endif %}
+    </p>
+    
+    <div class="lab-info">
+        <h3>Лабораторная работа 8: Flask и БД</h3>
+        <p>Реализация регистрации и авторизации пользователей с использованием ORM</p>
+    </div>
+    
+    <div class="features">
+        <div class="feature-card">
+            <div class="feature-icon">📝</div>
+            <h3 class="feature-title">Регистрация</h3>
+            <p class="feature-description">
+                Создайте учетную запись для доступа ко всем функциям системы
+            </p>
+            {% if not session.username %}
+                <a href="{{ url_for('lab8.register') }}" class="btn btn-primary" style="margin-top: 15px;">
+                    Зарегистрироваться
+                </a>
+            {% endif %}
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">🔐</div>
+            <h3 class="feature-title">Авторизация</h3>
+            <p class="feature-description">
+                Безопасный вход в систему с проверкой учетных данных
+            </p>
+            {% if not session.username %}
+                <a href="{{ url_for('lab8.login') }}" class="btn btn-secondary" style="margin-top: 15px;">
+                    Войти в систему
+                </a>
+            {% endif %}
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">📚</div>
+            <h3 class="feature-title">База знаний</h3>
+            <p class="feature-description">
+                Храните все ваши знания в одном удобном месте
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">✅</div>
+            <h3 class="feature-title">Готовые функции</h3>
+            <p class="feature-description">
+                Регистрация уже работает! Проверьте создание новых пользователей
+            </p>
+            <a href="{{ url_for('lab8.test_users') }}" class="btn-test" style="margin-top: 15px;">
+                Показать пользователей
+            </a>
+        </div>
+    </div>
+    
+    {% if session.username %}
+        <div class="user-actions" style="margin-top: 40px; text-align: center;">
+            <a href="{{ url_for('lab8.create_article') }}" class="btn btn-primary" style="padding: 15px 30px; font-size: 18px;">
+                🚀 Начать создавать статьи
+            </a>
+            <p style="margin-top: 15px; color: #666;">
+                Вы вошли как <strong>{{ session.username }}</strong> | 
+                <a href="{{ url_for('lab8.logout') }}" style="color: #667eea;">Выйти</a>
+            </p>
+        </div>
+    {% endif %}
+{% endblock %}
