@@ -1,0 +1,64 @@
+{% extends "lab8/base.html" %}
+
+{% block title %}Подтверждение выхода - База знаний{% endblock %}
+
+{% block lab %}Лабораторная работа 8 - Выход из системы{% endblock %}
+
+{% block main %}
+    <div class="logout-container">
+        <div class="logout-card">
+            <div class="logout-icon">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+            </div>
+            
+            <h1>Выход из системы</h1>
+            
+            <div class="user-info">
+                <p>Вы вошли как: <strong>{{ current_user.login }}</strong></p>
+                <p>ID пользователя: <code>{{ current_user.id }}</code></p>
+            </div>
+            
+            <div class="warning-message">
+                <h3>⚠️ Вы уверены, что хотите выйти?</h3>
+                <p>После выхода вам потребуется снова ввести логин и пароль для доступа к защищенным страницам.</p>
+            </div>
+            
+            <form action="{{ url_for('lab8.logout_action') }}" method="post" class="logout-form">
+                <div class="form-group">
+                    <label class="confirm-label">
+                        <input type="radio" name="confirm" value="yes" required>
+                        Да, выйти из системы
+                    </label>
+                    
+                    <label class="confirm-label">
+                        <input type="radio" name="confirm" value="no" required>
+                        Нет, остаться в системе
+                    </label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-danger">
+                        Подтвердить выбор
+                    </button>
+                    <a href="{{ url_for('lab8.index') }}" class="btn btn-secondary">
+                        Отмена
+                    </a>
+                </div>
+            </form>
+            
+            <div class="logout-info">
+                <h4>Что произойдет после выхода:</h4>
+                <ul>
+                    <li>Ваша сессия будет закрыта</li>
+                    <li>Доступ к защищенным страницам будет прекращен</li>
+                    <li>Корзина покупок (если есть) будет очищена</li>
+                    <li>Вы сможете снова войти в любой момент</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
