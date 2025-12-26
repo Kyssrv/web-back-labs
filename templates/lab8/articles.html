@@ -1,0 +1,84 @@
+{% extends "lab8/base.html" %}
+
+{% block title %}Мои статьи - База знаний{% endblock %}
+
+{% block lab %}Лабораторная работа 8 - Мои статьи{% endblock %}
+
+{% block main %}
+    <div class="articles-container">
+        <h1>Мои статьи</h1>
+        
+        <div class="articles-header">
+            <a href="{{ url_for('lab8.create_article') }}" class="btn btn-primary">
+                + Создать новую статью
+            </a>
+            <p class="articles-count">Всего статей: {{ user_articles|length }}</p>
+        </div>
+        
+        {% if user_articles %}
+            <div class="articles-list">
+                {% for article in user_articles %}
+                    <div class="article-card">
+                        <div class="article-header">
+                            <h3>{{ article.title }}</h3>
+                            <div class="article-meta">
+                                <span class="badge {% if article.is_public %}badge-public{% else %}badge-private{% endif %}">
+                                    {{ 'Публичная' if article.is_public else 'Приватная' }}
+                                </span>
+                                <span class="badge {% if article.is_favorite %}badge-favorite{% endif %}">
+                                    {{ '★ Избранная' if article.is_favorite }}
+                                </span>
+                                <span class="likes">❤️ {{ article.likes }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="article-content">
+                            <p>{{ article.article_text[:200] }}{% if article.article_text|length > 200 %}...{% endif %}</p>
+                        </div>
+                        
+                        <div class="article-footer">
+                            <span class="date">Создано: {{ article.created_at.strftime('%d.%m.%Y %H:%M') if article.created_at else 'Не указано' }}</span>
+                            <div class="article-actions">
+                                <a href="#" class="btn-action">Редактировать</a>
+                                <a href="#" class="btn-action btn-danger">Удалить</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-articles">
+                <p>У вас пока нет статей. Создайте первую!</p>
+                <a href="{{ url_for('lab8.create_article') }}" class="btn btn-primary">
+                    Создать статью
+                </a>
+            </div>
+        {% endif %}
+        
+        {% if public_articles %}
+            <h2 style="margin-top: 40px;">Публичные статьи других пользователей</h2>
+            <div class="articles-list">
+                {% for article in public_articles %}
+                    <div class="article-card">
+                        <div class="article-header">
+                            <h3>{{ article.title }}</h3>
+                            <div class="article-meta">
+                                <span class="badge badge-public">Публичная</span>
+                                <span class="author">Автор: {{ article.author.login }}</span>
+                                <span class="likes">❤️ {{ article.likes }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="article-content">
+                            <p>{{ article.article_text[:200] }}{% if article.article_text|length > 200 %}...{% endif %}</p>
+                        </div>
+                        
+                        <div class="article-footer">
+                            <span class="date">Создано: {{ article.created_at.strftime('%d.%m.%Y %H:%M') if article.created_at else 'Не указано' }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

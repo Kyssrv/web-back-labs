@@ -1,0 +1,83 @@
+{% extends "lab8/base.html" %}
+
+{% block title %}Вход в систему - База знаний{% endblock %}
+
+{% block lab %}Лабораторная работа 8 - Авторизация{% endblock %}
+
+{% block main %}
+    <div class="login-container">
+        <h1>Вход в систему</h1>
+        
+        {% if error %}
+            <div class="error-message">
+                <strong>Ошибка:</strong> {{ error }}
+            </div>
+        {% endif %}
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="info-message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form action="{{ url_for('lab8.login') }}" method="post" class="login-form">
+            <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
+            
+            <div class="form-group">
+                <label for="login">
+                    Логин:
+                    <input type="text" 
+                           id="login" 
+                           name="login" 
+                           required
+                           placeholder="Введите логин"
+                           value="{{ request.form.login if request.form }}">
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">
+                    Пароль:
+                    <input type="password" 
+                           id="password" 
+                           name="password" 
+                           required
+                           placeholder="Введите пароль">
+                </label>
+            </div>
+            
+            <div class="form-group remember-me">
+                <label>
+                    <input type="checkbox" name="remember">
+                    Запомнить меня
+                </label>
+                <small class="form-text">
+                    (если не отметить, сессия закроется при закрытии браузера)
+                </small>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Войти</button>
+                <a href="{{ url_for('lab8.register') }}" class="btn btn-secondary">Регистрация</a>
+            </div>
+        </form>
+        
+        <div class="login-help">
+            <p>Забыли пароль? <a href="#">Восстановить доступ</a></p>
+            <p>Нет аккаунта? <a href="{{ url_for('lab8.register') }}">Зарегистрируйтесь</a></p>
+        </div>
+        
+        <div class="test-links">
+            <h3>Тестовые страницы:</h3>
+            <ul>
+                <li><a href="{{ url_for('lab8.secure_test') }}">Защищенная тестовая страница</a></li>
+                <li><a href="{{ url_for('lab8.test_users') }}">Список пользователей</a></li>
+                <li><a href="{{ url_for('lab8.article_list') }}">Список статей (требуется авторизация)</a></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
