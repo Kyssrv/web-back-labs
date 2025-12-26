@@ -1,84 +1,47 @@
-{% extends "lab8/base.html" %}
+{% extends "base.html" %}
 
 {% block title %}Регистрация - База знаний{% endblock %}
 
-{% block lab %}Лабораторная работа 8 - Регистрация{% endblock %}
+{% block page_title %}Регистрация{% endblock %}
 
 {% block main %}
-    <div class="register-container">
-        <h1>Регистрация</h1>
-        
-        {% if error %}
-            <div class="error-message">
-                <strong>Ошибка:</strong> {{ error }}
-            </div>
-        {% endif %}
-        
-        {% if success %}
-            <div class="success-message">
-                <strong>Успех!</strong> {{ success }}
-            </div>
-        {% endif %}
-        
-        <form action="/lab8/register" method="post" class="register-form">
-            <div class="form-group">
-                <label for="login">
-                    Логин:
-                    <input type="text" 
-                           id="login" 
-                           name="login" 
-                           required
-                           placeholder="Введите логин"
-                           value="{{ request.form.login if request.form }}">
-                </label>
-                <small class="form-text">Минимум 3 символа, только буквы и цифры</small>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">
-                    Пароль:
-                    <input type="password" 
-                           id="password" 
-                           name="password" 
-                           required
-                           placeholder="Введите пароль">
-                </label>
-                <small class="form-text">Минимум 3 символа</small>
-            </div>
-            
-            <div class="form-group">
-                <label for="confirm_password">
-                    Подтверждение пароля:
-                    <input type="password" 
-                           id="confirm_password" 
-                           name="confirm_password" 
-                           required
-                           placeholder="Повторите пароль">
-                </label>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-                <a href="{{ url_for('lab8.login') }}" class="btn btn-secondary">Уже есть аккаунт? Войти</a>
-            </div>
-        </form>
-        
-        <div class="additional-info">
-            <p>После регистрации вы сможете:</p>
-            <ul>
-                <li>Создавать свои статьи</li>
-                <li>Редактировать и удалять свои статьи</li>
-                <li>Добавлять статьи в избранное</li>
-                <li>Просматривать публичные статьи других пользователей</li>
+<div style="max-width: 500px; margin: 0 auto;">
+    {% if errors %}
+        <div style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+            <ul style="margin: 0;">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
             </ul>
         </div>
-        
-        <div class="test-link">
-            <p>
-                <a href="{{ url_for('lab8.test_users') }}" class="btn-test">
-                    Проверить зарегистрированных пользователей
-                </a>
-            </p>
+    {% endif %}
+    
+    <form method="post" style="background: #f9f9f9; padding: 2rem; border-radius: 4px;">
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem;">Логин:</label>
+            <input type="text" name="login" required 
+                   style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+            <small style="color: #666;">Минимум 3 символа</small>
         </div>
-    </div>
+        
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem;">Пароль:</label>
+            <input type="password" name="password" required 
+                   style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+            <small style="color: #666;">Минимум 3 символа</small>
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem;">Подтверждение пароля:</label>
+            <input type="password" name="confirm_password" required 
+                   style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Зарегистрироваться</button>
+        
+        <p style="margin-top: 1rem; text-align: center;">
+            Уже есть аккаунт? <a href="{{ url_for('lab8.login') }}">Войдите</a>
+        </p>
+    </form>
+</div>
 {% endblock %}

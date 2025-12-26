@@ -1,86 +1,228 @@
-{% extends "lab8/base.html" %}
+{% extends "base.html" %}
 
-{% block lab %}Лабораторная работа 8{% endblock %}
+{% block title %}Главная - База знаний{% endblock %}
 
-{% block main %}
-    <h2 class="welcome-title">
-        {% if session.username %}
-            Добро пожаловать, {{ session.username }}!
-        {% else %}
-            Добро пожаловать в Базу знаний!
-        {% endif %}
-    </h2>
-    
-    <p class="welcome-text">
-        {% if session.username %}
-            Вы успешно вошли в систему. Теперь вы можете создавать статьи, редактировать их и управлять своей базой знаний.
-        {% else %}
-            Это система для создания, хранения и управления статьями и знаниями. 
-            Зарегистрируйтесь, чтобы получить доступ ко всем возможностям!
-        {% endif %}
-    </p>
-    
-    <div class="lab-info">
-        <h3>Лабораторная работа 8: Flask и БД</h3>
-        <p>Реализация регистрации и авторизации пользователей с использованием ORM</p>
-    </div>
-    
-    <div class="features">
-        <div class="feature-card">
-            <div class="feature-icon">📝</div>
-            <h3 class="feature-title">Регистрация</h3>
-            <p class="feature-description">
-                Создайте учетную запись для доступа ко всем функциям системы
-            </p>
-            {% if not session.username %}
-                <a href="{{ url_for('lab8.register') }}" class="btn btn-primary" style="margin-top: 15px;">
-                    Зарегистрироваться
-                </a>
-            {% endif %}
-        </div>
-        
-        <div class="feature-card">
-            <div class="feature-icon">🔐</div>
-            <h3 class="feature-title">Авторизация</h3>
-            <p class="feature-description">
-                Безопасный вход в систему с проверкой учетных данных
-            </p>
-            {% if not session.username %}
-                <a href="{{ url_for('lab8.login') }}" class="btn btn-secondary" style="margin-top: 15px;">
-                    Войти в систему
-                </a>
-            {% endif %}
-        </div>
-        
-        <div class="feature-card">
-            <div class="feature-icon">📚</div>
-            <h3 class="feature-title">База знаний</h3>
-            <p class="feature-description">
-                Храните все ваши знания в одном удобном месте
-            </p>
-        </div>
-        
-        <div class="feature-card">
-            <div class="feature-icon">✅</div>
-            <h3 class="feature-title">Готовые функции</h3>
-            <p class="feature-description">
-                Регистрация уже работает! Проверьте создание новых пользователей
-            </p>
-            <a href="{{ url_for('lab8.test_users') }}" class="btn-test" style="margin-top: 15px;">
-                Показать пользователей
-            </a>
-        </div>
-    </div>
-    
-    {% if session.username %}
-        <div class="user-actions" style="margin-top: 40px; text-align: center;">
-            <a href="{{ url_for('lab8.create_article') }}" class="btn btn-primary" style="padding: 15px 30px; font-size: 18px;">
-                🚀 Начать создавать статьи
-            </a>
-            <p style="margin-top: 15px; color: #666;">
-                Вы вошли как <strong>{{ session.username }}</strong> | 
-                <a href="{{ url_for('lab8.logout') }}" style="color: #667eea;">Выйти</a>
-            </p>
-        </div>
+{% block page_title %}
+    {% if current_user.is_authenticated %}
+        Добро пожаловать, {{ current_user.login }}!
+    {% else %}
+        Добро пожаловать в Базу знаний!
     {% endif %}
 {% endblock %}
+
+{% block main %}
+<div>
+    <!-- Приветствие -->
+    <div style="text-align: center; padding: 2rem 0 3rem 0;">
+        <h3 style="margin-bottom: 2rem; color: #333;">
+            {% if current_user.is_authenticated %}
+                Рады видеть вас снова! Создавайте статьи, делитесь знаниями.
+            {% else %}
+                Присоединяйтесь к сообществу! Регистрируйтесь и делитесь знаниями.
+            {% endif %}
+        </h3>
+        
+        <div style="display: flex; gap: 1rem; justify-content: center; margin: 2rem 0; flex-wrap: wrap;">
+            <a href="{{ url_for('lab8.public_articles') }}" class="btn btn-primary" style="padding: 0.75rem 2rem;">
+                📚 Все публичные статьи
+            </a>
+            
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('lab8.create_article') }}" class="btn btn-primary" style="padding: 0.75rem 2rem; background: #4CAF50;">
+                    ✍️ Создать статью
+                </a>
+                <a href="{{ url_for('lab8.article_list') }}" class="btn" style="padding: 0.75rem 2rem;">
+                    📄 Мои статьи
+                </a>
+            {% else %}
+                <a href="{{ url_for('lab8.register') }}" class="btn btn-primary" style="padding: 0.75rem 2rem; background: #4CAF50;">
+                    📝 Зарегистрироваться
+                </a>
+                <a href="{{ url_for('lab8.login') }}" class="btn" style="padding: 0.75rem 2rem;">
+                    🔑 Войти
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Поиск -->
+    <div style="max-width: 600px; margin: 0 auto 3rem auto; padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <h4 style="text-align: center; margin-bottom: 1rem;">Поиск по статьям</h4>
+        <form action="{{ url_for('lab8.search_articles') }}" method="get">
+            <div style="display: flex; gap: 1rem;">
+                <input type="search" 
+                       name="q" 
+                       placeholder="Введите запрос для поиска..." 
+                       style="flex: 1; padding: 0.75rem; border: 2px solid #667eea; border-radius: 4px;"
+                       required>
+                <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">
+                    🔍 Найти
+                </button>
+            </div>
+            {% if current_user.is_authenticated %}
+            <div style="margin-top: 1rem; text-align: center; font-size: 0.875rem; color: #666;">
+                Поиск будет выполнен по всем публичным и вашим статьям
+            </div>
+            {% endif %}
+        </form>
+    </div>
+    
+    <!-- Последние публичные статьи -->
+    {% if latest_articles %}
+    <div style="margin-bottom: 3rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3>Последние публичные статьи</h3>
+            <a href="{{ url_for('lab8.public_articles') }}" class="btn" style="color: #667eea;">
+                Смотреть все →
+            </a>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem;">
+            {% for article in latest_articles %}
+            <div style="background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                <h4 style="margin: 0 0 1rem 0;">
+                    <a href="{{ url_for('lab8.article_detail', article_id=article.id) }}" 
+                       style="color: #333; text-decoration: none;">
+                        {{ article.title }}
+                    </a>
+                </h4>
+                
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                        {{ article.author.login|first|upper }}
+                    </div>
+                    <div>
+                        <div style="font-weight: 500;">{{ article.author.login }}</div>
+                        <div style="font-size: 0.875rem; color: #666;">
+                            {{ article.created_at.strftime('%d.%m.%Y') if article.created_at else 'Без даты' }}
+                        </div>
+                    </div>
+                </div>
+                
+                <p style="color: #555; line-height: 1.6; margin-bottom: 1rem;">
+                    {{ article.article_text[:120] }}
+                    {% if article.article_text|length > 120 %}...{% endif %}
+                </p>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #666; font-size: 0.875rem;">
+                        {% if article.likes %}
+                            ❤️ {{ article.likes }} лайков
+                        {% endif %}
+                    </span>
+                    <a href="{{ url_for('lab8.article_detail', article_id=article.id) }}" 
+                       class="btn" style="padding: 0.5rem 1rem; background: #f0f0f0; color: #333;">
+                        Читать
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Популярные статьи -->
+    {% if popular_articles %}
+    <div style="margin-bottom: 3rem;">
+        <h3 style="margin-bottom: 1.5rem;">Самые популярные статьи</h3>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
+            {% for article in popular_articles %}
+            <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); padding: 1.5rem; border-radius: 8px; border-left: 4px solid #667eea;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <span style="background: #667eea; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">
+                        {{ loop.index }}
+                    </span>
+                    <h4 style="margin: 0; flex: 1;">
+                        <a href="{{ url_for('lab8.article_detail', article_id=article.id) }}" 
+                           style="color: #333; text-decoration: none;">
+                            {{ article.title|truncate(40) }}
+                        </a>
+                    </h4>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                    <span style="color: #666; font-size: 0.875rem;">
+                        {{ article.author.login }}
+                    </span>
+                    <span style="color: #f44336;">
+                        ❤️ {{ article.likes or 0 }}
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Быстрые ссылки -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
+        <a href="{{ url_for('lab8.stats') }}" 
+           style="background: white; padding: 1.5rem; border-radius: 8px; text-align: center; text-decoration: none; color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+            <div style="font-weight: 500;">Статистика</div>
+            <div style="font-size: 0.875rem; color: #666; margin-top: 0.5rem;">Статистика сайта</div>
+        </a>
+        
+        <a href="{{ url_for('lab8.article_authors') }}" 
+           style="background: white; padding: 1.5rem; border-radius: 8px; text-align: center; text-decoration: none; color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">👥</div>
+            <div style="font-weight: 500;">Авторы</div>
+            <div style="font-size: 0.875rem; color: #666; margin-top: 0.5rem;">Все авторы статей</div>
+        </a>
+        
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('lab8.profile') }}" 
+           style="background: white; padding: 1.5rem; border-radius: 8px; text-align: center; text-decoration: none; color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">👤</div>
+            <div style="font-weight: 500;">Профиль</div>
+            <div style="font-size: 0.875rem; color: #666; margin-top: 0.5rem;">Мой профиль</div>
+        </a>
+        {% else %}
+        <a href="{{ url_for('lab8.register') }}" 
+           style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 8px; text-align: center; text-decoration: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🚀</div>
+            <div style="font-weight: 500;">Начать</div>
+            <div style="font-size: 0.875rem; opacity: 0.9; margin-top: 0.5rem;">Зарегистрироваться</div>
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    @media (max-width: 768px) {
+        .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .grid-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    // AJAX поиск на главной
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchForm = document.querySelector('form[action*="search"]');
+        if (searchForm) {
+            const searchInput = searchForm.querySelector('input[name="q"]');
+            
+            // Фокус на поле поиска при нажатии Ctrl+K
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    searchInput.focus();
+                }
+            });
+            
+            // Подсказка по Ctrl+K
+            searchInput.addEventListener('focus', function() {
+                this.setAttribute('title', 'Или нажмите Ctrl+K для быстрого доступа');
+            });
+        }
+    });
+</script>
+{% endblock %}
+  

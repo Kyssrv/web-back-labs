@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование статьи - База знаний{% endblock %}
+
+{% block page_title %}Редактирование статьи{% endblock %}
+
+{% block main %}
+<div style="max-width: 800px; margin: 0 auto;">
+    {% if errors %}
+        <div style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+            <ul style="margin: 0;">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    
+    <form method="post" style="background: #f9f9f9; padding: 2rem; border-radius: 4px;">
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem;">Заголовок статьи *</label>
+            <input type="text" name="title" required 
+                   value="{{ article.title }}"
+                   style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem;">Текст статьи *</label>
+            <textarea name="article_text" required rows="10"
+                      style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">{{ article.article_text }}</textarea>
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <input type="checkbox" name="is_public" {% if article.is_public %}checked{% endif %}>
+                Сделать статью публичной
+            </label>
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <input type="checkbox" name="is_favorite" {% if article.is_favorite %}checked{% endif %}>
+                Добавить в избранное
+            </label>
+        </div>
+        
+        <div style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+            <a href="{{ url_for('lab8.article_detail', article_id=article.id) }}" class="btn">Просмотр</a>
+            <a href="{{ url_for('lab8.article_list') }}" class="btn">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

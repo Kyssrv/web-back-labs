@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Авторы публичных статей - База знаний{% endblock %}
+
+{% block page_title %}Авторы публичных статей{% endblock %}
+
+{% block main %}
+<div>
+    <div style="background: #f0f9ff; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 0.5rem;">Наши авторы</h3>
+        <p style="color: #666; margin: 0;">Всего авторов: <strong>{{ authors|length }}</strong></p>
+    </div>
+    
+    {% if authors %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+            {% for author_data in authors %}
+            <div style="background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold;">
+                        {{ author_data.author.login|first|upper }}
+                    </div>
+                    <div>
+                        <h4 style="margin: 0 0 0.25rem 0;">
+                            <a href="{{ url_for('lab8.author_articles', author_id=author_data.author.id) }}" 
+                               style="color: #333; text-decoration: none;">
+                                {{ author_data.author.login }}
+                            </a>
+                        </h4>
+                        <div style="color: #666; font-size: 0.875rem;">
+                            ID: {{ author_data.author.id }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <span style="font-weight: 500;">Статей: {{ author_data.article_count }}</span>
+                    </div>
+                    
+                    {% if author_data.latest_article %}
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #666; font-size: 0.875rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Последняя: 
+                        <a href="{{ url_for('lab8.article_detail', article_id=author_data.latest_article.id) }}" 
+                           style="color: #667eea; text-decoration: none;">
+                            {{ author_data.latest_article.title|truncate(30) }}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <a href="{{ url_for('lab8.author_articles', author_id=author_data.author.id) }}" 
+                   class="btn" style="width: 100%; text-align: center; background: #f8f9fa; color: #333;">
+                    Посмотреть все статьи
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 4rem 2rem; background: #f9f9f9; border-radius: 8px;">
+            <div style="font-size: 4rem; margin-bottom: 1rem; color: #ddd;">👤</div>
+            <h4 style="margin-bottom: 1rem; color: #666;">Авторов пока нет</h4>
+            <p style="color: #888; margin-bottom: 2rem;">
+                Станьте первым автором, создав публичную статью!
+            </p>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('lab8.create_article') }}" class="btn btn-primary">
+                    Создать статью
+                </a>
+            {% else %}
+                <a href="{{ url_for('lab8.register') }}" class="btn btn-primary">
+                    Зарегистрироваться
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+    
+    <!-- Навигация -->
+    <div style="display: flex; gap: 1rem; margin-top: 3rem; justify-content: center;">
+        <a href="{{ url_for('lab8.public_articles') }}" class="btn btn-primary">
+            ← Все публичные статьи
+        </a>
+        <a href="{{ url_for('lab8.index') }}" class="btn">
+            На главную
+        </a>
+    </div>
+</div>
+{% endblock %}

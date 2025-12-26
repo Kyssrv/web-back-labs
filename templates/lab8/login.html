@@ -1,83 +1,45 @@
-{% extends "lab8/base.html" %}
+{% extends "base.html" %}
 
-{% block title %}Вход в систему - База знаний{% endblock %}
+{% block title %}Вход - База знаний{% endblock %}
 
-{% block lab %}Лабораторная работа 8 - Авторизация{% endblock %}
+{% block page_title %}Вход в систему{% endblock %}
 
 {% block main %}
-    <div class="login-container">
-        <h1>Вход в систему</h1>
-        
-        {% if error %}
-            <div class="error-message">
-                <strong>Ошибка:</strong> {{ error }}
-            </div>
-        {% endif %}
-        
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="info-message">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        
-        <form action="{{ url_for('lab8.login') }}" method="post" class="login-form">
-            <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
-            
-            <div class="form-group">
-                <label for="login">
-                    Логин:
-                    <input type="text" 
-                           id="login" 
-                           name="login" 
-                           required
-                           placeholder="Введите логин"
-                           value="{{ request.form.login if request.form }}">
-                </label>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">
-                    Пароль:
-                    <input type="password" 
-                           id="password" 
-                           name="password" 
-                           required
-                           placeholder="Введите пароль">
-                </label>
-            </div>
-            
-            <div class="form-group remember-me">
-                <label>
-                    <input type="checkbox" name="remember">
-                    Запомнить меня
-                </label>
-                <small class="form-text">
-                    (если не отметить, сессия закроется при закрытии браузера)
-                </small>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Войти</button>
-                <a href="{{ url_for('lab8.register') }}" class="btn btn-secondary">Регистрация</a>
-            </div>
-        </form>
-        
-        <div class="login-help">
-            <p>Забыли пароль? <a href="#">Восстановить доступ</a></p>
-            <p>Нет аккаунта? <a href="{{ url_for('lab8.register') }}">Зарегистрируйтесь</a></p>
+<div style="max-width: 500px; margin: 0 auto;">
+    {% if error %}
+        <div style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+            {{ error }}
+        </div>
+    {% endif %}
+    
+    <form method="post" style="background: #f9f9f9; padding: 2rem; border-radius: 4px;">
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem;">Логин:</label>
+            <input type="text" name="login" required 
+                   style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
         </div>
         
-        <div class="test-links">
-            <h3>Тестовые страницы:</h3>
-            <ul>
-                <li><a href="{{ url_for('lab8.secure_test') }}">Защищенная тестовая страница</a></li>
-                <li><a href="{{ url_for('lab8.test_users') }}">Список пользователей</a></li>
-                <li><a href="{{ url_for('lab8.article_list') }}">Список статей (требуется авторизация)</a></li>
-            </ul>
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem;">Пароль:</label>
+            <input type="password" name="password" required 
+                   style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
         </div>
-    </div>
+        
+        <div style="margin-bottom: 1rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" name="remember">
+                Запомнить меня
+            </label>
+            <small style="color: #666; display: block; margin-top: 0.25rem;">
+                (если не отметить, сессия закроется при закрытии браузера)
+            </small>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Войти</button>
+        
+        <p style="margin-top: 1rem; text-align: center;">
+            Нет аккаунта? <a href="{{ url_for('lab8.register') }}">Зарегистрируйтесь</a>
+        </p>
+    </form>
+</div>
 {% endblock %}
