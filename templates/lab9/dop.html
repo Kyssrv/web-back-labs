@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новогодние Подарки Pro</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #0b3d2c, #1a5c45);
+            font-family: 'Arial', sans-serif;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background-color: #c62828;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .auth-panel {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            margin: 5px;
+        }
+
+        .btn-auth { background: #ffcc00; color: #333; }
+        .btn-santa { 
+            background: #ffffff; 
+            color: #c62828; 
+            display: none; /* Скрыта по умолчанию */
+            font-size: 1.1em;
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+        }
+        .btn-santa:hover { transform: scale(1.05); background: #f0f0f0; }
+
+        .gift-container {
+            position: relative;
+            min-height: 500px;
+            margin: 20px auto;
+            max-width: 900px;
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: 20px;
+        }
+
+        .gift-box {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            transition: transform 0.3s, opacity 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+        }
+
+        .gift-box:hover { transform: scale(1.1); }
+        .gift-box.opened { opacity: 0.4; cursor: default; transform: scale(0.9); filter: grayscale(1); }
+        
+        /* Особый стиль для VIP подарков */
+        .gift-box.premium::after {
+            content: "⭐️";
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 20px;
+        }
+
+        .message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            display: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            z-index: 1000;
+        }
+
+        .counter {
+            font-size: 20px;
+            margin: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .snowflake {
+            position: fixed; top: -10px; color: white; pointer-events: none; animation: fall linear forwards;
+        }
+        @keyframes fall { to { transform: translateY(100vh); } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎄 Волшебные Подарки 🎅</h1>
+        <div class="auth-panel">
+            <span id="statusText">Вы вошли как: Гость</span>
+            <button class="btn btn-auth" id="authBtn" onclick="toggleAuth()">Войти</button>
+            <button class="btn btn-santa" id="santaBtn" onclick="refillGifts()">🎅 Дед Мороз (Наполнить всё!)</button>
+        </div>
+    </div>
+
+    <div class="counter">
+        Осталось попыток: <span id="remainingCount">3</span>
+    </div>
+
+    <div class="gift-container" id="giftContainer"></div>
+
+    <div class="message" id="messageBox">
+        <h3 id="congratulationText"></h3>
+        <button class="btn" style="background:#c62828; color:white" onclick="hideMessage()">Ура!</button>
+    </div>
+
+    <script>
+        const giftPositions = [
+            {left: '10%', top: '15%'}, {left: '25%', top: '60%'},
+            {left: '40%', top: '30%'}, {left: '55%', top: '70%'},
+            {left: '70%', top: '20%'}, {left: '15%', top: '75%'},
+            {left: '80%', top: '50%'}, 
+            {left: '35%', top: '85%', premium: true}, 
+            {left: '65%', top: '45%', premium: true}, 
+            {left: '90%', top: '65%', premium: true}
+        ];
+
+        const congratulations = [
+            "С Новым Годом! 🎁", "Счастья и радости! ✨", "Много сладостей! 🌟",
+            "Исполнения желаний! 💫", "Тепла и уюта! ❄️", "Верных друзей! 🎉",
+            "Крепкого здоровья! 🏮", 
+            "💎 VIP: Путешествие мечты!", 
+            "💎 VIP: Новый автомобиль!", 
+            "💎 VIP: Мешок золота!"
+        ];
+
+        let isAuthorized = false;
+        let openedCount = 0;
+        const maxGifts = 3;
+
+        function initGifts() {
+            const container = document.getElementById('giftContainer');
+            container.innerHTML = ''; // Очистка при перезагрузке
+            giftPositions.forEach((pos, index) => {
+                const gift = document.createElement('div');
+                gift.className = 'gift-box' + (pos.premium ? ' premium' : '');
+                gift.style.left = pos.left;
+                gift.style.top = pos.top;
+                gift.innerHTML = "🎁";
+                gift.onclick = () => openGift(gift, index, pos.premium);
+                container.appendChild(gift);
+            });
+        }
+
+        function toggleAuth() {
+            isAuthorized = !isAuthorized;
+            const btn = document.getElementById('authBtn');
+            const santaBtn = document.getElementById('santaBtn');
+            const statusText = document.getElementById('statusText');
+
+            if (isAuthorized) {
+                btn.innerText = "Выйти";
+                santaBtn.style.display = "inline-block";
+                statusText.innerText = "Вы вошли как: Пользователь";
+            } else {
+                btn.innerText = "Войти";
+                santaBtn.style.display = "none";
+                statusText.innerText = "Вы вошли как: Гость";
+            }
+        }
+
+        function openGift(element, index, isPremium) {
+            if (element.classList.contains('opened')) return;
+
+            // Проверка авторизации для VIP подарков
+            if (isPremium && !isAuthorized) {
+                alert("⭐️ Этот подарок только для авторизованных пользователей!");
+                return;
+            }
+
+            if (openedCount < maxGifts) {
+                element.classList.add('opened');
+                openedCount++;
+                document.getElementById('remainingCount').innerText = maxGifts - openedCount;
+                showMessage(congratulations[index]);
+            } else {
+                alert("Закончились попытки! Попроси Деда Мороза наполнить мешок (нужна авторизация).");
+            }
+        }
+
+        function refillGifts() {
+            openedCount = 0;
+            document.getElementById('remainingCount').innerText = maxGifts;
+            initGifts(); // Пересоздаем коробки
+            alert("🎅 Хо-хо-хо! Все коробки снова полны подарков!");
+        }
+        function showMessage(text) {
+            document.getElementById('congratulationText').innerText = text;
+            document.getElementById('messageBox').style.display = 'block';
+        }
+
+        function hideMessage() {
+            document.getElementById('messageBox').style.display = 'none';
+        }
+
+        // Снежинки
+        function createSnowflake() {
+            const flake = document.createElement('div');
+            flake.className = 'snowflake';
+            flake.innerText = '❄️';
+            flake.style.left = Math.random() * 100 + 'vw';
+            flake.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(flake);
+            setTimeout(() => flake.remove(), 5000);
+        }
+
+        setInterval(createSnowflake, 200);
+        initGifts();
+    </script>
+</body>
+</html>
